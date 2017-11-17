@@ -27,7 +27,7 @@ describe('Projects test', () => {
                 "url": "https://firebasestorage.googleapis.com/v0/b/dragonserver-627cc.appspot.com/o/images%2F5e9dd160-c9c9-11e7-a70a-5b4fc8bee0df?alt=media&token=0789dd42-cf2b-4995-b1f8-909cafcf82a9"
             }
         ],
-        "interview": [
+        "interviews": [
             {
                 "seq": 1,
                 "status": "registered",
@@ -97,7 +97,7 @@ describe('Projects test', () => {
                     "url": "https://firebasestorage.googleapis.com/v0/b/dragonserver-627cc.appspot.com/o/images%2F5e9dd160-c9c9-11e7-a70a-5b4fc8bee0df?alt=media&token=0789dd42-cf2b-4995-b1f8-909cafcf82a9"
                 }
             ],
-            "interview": [{
+            "interviews": [{
                 "seq": 1,
                 "status": "registered",
                 "plans": [
