@@ -7,10 +7,9 @@ const projectSchema = new Schema({
     name: String,
     introduce: String,
     images: Array,
-    apps: Array,
     description: String,
     descriptionImages: Array,
-    interview: Object,
+    interview: Array,
     status: String,
     interviewer: Object
 });

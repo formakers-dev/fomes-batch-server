@@ -4,15 +4,14 @@ const getPackageNameList = () => {
     const currentDate = new Date();
 
     return Projects.aggregate([
+        { $unwind: { path : '$interview' }},
         { $match :
                 { $and:
                         [ { 'interview.startDate': { $lte: currentDate } },
                             {'interview.endDate': { $gte: currentDate } } ]
                 }
         },
-        { $project : { 'projectId' : true, 'interview.apps' : true }},
-        { $unwind : { path : '$interview.apps'}},
-        { $group : { _id: '$_id', projectId: {$first : '$projectId'}, app: { $push : '$interview.apps' }}},
+        { $project : { 'projectId' : true, 'interviewSeq' : '$interview.seq', 'app' : '$interview.apps' }},
         { $unwind : { path : '$app'}}
     ]).exec();
 };
