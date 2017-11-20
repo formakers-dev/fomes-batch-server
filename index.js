@@ -2,6 +2,7 @@ const Agenda = require('agenda');
 const config = require('./config');
 const { getUserList } = require('./jobs/appUsages');
 const { getPackageNameList } = require('./jobs/projects');
+const { getNotificationToken } = require('./jobs/users');
 
 require('./db').init();
 
@@ -30,6 +31,19 @@ agenda.define('get user list for packagename', function(job, done) {
     }).catch(err => {
         console.log(err);
         done(err)
+    });
+});
+
+agenda.define('get notification token list each user', function(job, done) {
+    console.log('get notification token list each user');
+    const appUsageList = job.attrs.data.appUsageList;
+
+    getNotificationToken(appUsageList).then(result => {
+        console.log(result);
+        done();
+    }).catch(err => {
+        console.log(err);
+        done(err);
     });
 });
 
