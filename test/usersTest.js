@@ -1,7 +1,7 @@
 const chai = require('chai');
 const should = chai.should();
 const Users = require('./../models/users');
-const { getNotificationToken } = require('./../jobs/users');
+const { getUserNotificationTokenList } = require('./../jobs/users');
 
 require('../db').init();
 
@@ -44,7 +44,7 @@ describe('Users test', () => {
             }
         ];
 
-        getNotificationToken(appUsageList).then(resultArray => {
+        getUserNotificationTokenList(appUsageList).then(resultArray => {
             resultArray.length.should.be.eql(2);
 
             resultArray.sort(function(user1, user2) {

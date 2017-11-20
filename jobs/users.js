@@ -1,8 +1,8 @@
 const Users = require('../models/users');
 
-const getNotificationToken = (appUsageList) => {
+const getUserNotificationTokenList = (appUsageList) => {
     const userList = appUsageList.map(appUsage => appUsage.userId);
     return Users.find({ userId : { $in : userList} }).exec();
 };
 
-module.exports = { getNotificationToken };
+module.exports = { getUserNotificationTokenList };

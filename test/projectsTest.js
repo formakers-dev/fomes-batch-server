@@ -47,8 +47,8 @@ describe('Projects test', () => {
                 ],
                 "endDate": new Date("2017-11-05T00:00:00.000Z"),
                 "startDate": new Date("2017-11-04T00:00:00.000Z"),
-                "closeDate": new Date("2017-11-03T00:00:00.000Z"),
-                "openDate": new Date("2017-11-02T00:00:00.000Z"),
+                "closeDate": new Date("2017-11-01T00:00:00.000Z"),
+                "openDate": new Date("2017-10-31T00:00:00.000Z"),
                 "location": "서울 잠실",
                 "type": "온라인 인터뷰"
             },
@@ -130,10 +130,21 @@ describe('Projects test', () => {
         let clock = sinon.useFakeTimers(new Date("2017-11-02").getTime());
 
         getPackageNameList().then(result => {
-            result.length.should.be.eql(1);
-            result[0].projectId.should.be.eql(100000043);
-            result[0].app.should.be.eql('com.nhn.android.search');
-            result[0].interviewSeq.should.be.eql(1);
+            result.length.should.be.eql(3);
+
+            result.sort(function(result1, result2) {
+               return result1.projectId - result2.projectId;
+            });
+
+            result[0].projectId.should.be.eql(100000042);
+            result[0].app.should.be.eql('com.nhn.appbee.search');
+            result[0].interviewSeq.should.be.eql(2);
+            result[1].projectId.should.be.eql(100000042);
+            result[1].app.should.be.eql('com.kakao.talk');
+            result[1].interviewSeq.should.be.eql(2);
+            result[2].projectId.should.be.eql(100000043);
+            result[2].app.should.be.eql('com.nhn.android.search');
+            result[2].interviewSeq.should.be.eql(1);
             done();
         }).catch(err => done(err));
 

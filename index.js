@@ -2,15 +2,15 @@ const Agenda = require('agenda');
 const config = require('./config');
 const { getUserList } = require('./jobs/appUsages');
 const { getPackageNameList } = require('./jobs/projects');
-const { getNotificationToken } = require('./jobs/users');
+const { getUserNotificationTokenList } = require('./jobs/users');
 const { sendNotification } = require('./jobs/notification');
 
 require('./db').init();
 
 const agenda = new Agenda({db: {address: config.agendaDBUrl, collection: 'agenda-jobs'}});
 
-agenda.define('get similar app list each interview', (job, done) => {
-    console.log('get similar app list each interview');
+agenda.define('get package name list each interview', (job, done) => {
+    console.log('get package name list each interview');
     getPackageNameList().then((result) => {
         console.log(result);
         agenda.now('get user list for package name', { appListByInterview : result });
@@ -25,9 +25,9 @@ agenda.define('get user list for package name', function(job, done) {
     console.log('get user list for package name');
     const appListByInterview = job.attrs.data.appListByInterview;
 
-    console.log(appListByInterview);
-    getUserList(appListByInterview).then((result) => {
-        console.log(result);
+    getUserList(appListByInterview).then((userList) => {
+        console.log(userList);
+        agenda.now('get notification token list each user', { userList : userList });
         done();
     }).catch(err => {
         console.log(err);
@@ -37,10 +37,12 @@ agenda.define('get user list for package name', function(job, done) {
 
 agenda.define('get notification token list each user', function(job, done) {
     console.log('get notification token list each user');
-    const appUsageList = job.attrs.data.appUsageList;
+    const userList = job.attrs.data.userList;
 
-    getNotificationToken(appUsageList).then(result => {
-        console.log(result);
+    getUserNotificationTokenList(userList).then(userTokenList => {
+        console.log(userTokenList);
+        const notificationIdList = userTokenList.map(userToken => userToken.registrationToken);
+        agenda.now('send notification to users', { notificationIdList : notificationIdList });
         done();
     }).catch(err => {
         console.log(err);
@@ -49,9 +51,11 @@ agenda.define('get notification token list each user', function(job, done) {
 });
 
 agenda.define('send notification to users', function(job, done) {
+    console.log('send notification to users');
     const notificationIdList = job.attrs.data.notificationIdList;
-    sendNotification(notificationIdList).then(result => {
-        console.log(result);
+
+    sendNotification(notificationIdList).then(response => {
+        console.log(response);
         done();
     }).catch(err => {
         console.log(err);
@@ -61,7 +65,7 @@ agenda.define('send notification to users', function(job, done) {
 
 agenda.on('ready', function() {
     console.log('agenda start!');
-    // agenda.now('get similar app list each interview');
+    // agenda.now('get package name list each interview');
     // agenda.every('3 second', 'get user list for package name');
 
     agenda.start();

@@ -7,8 +7,8 @@ const getPackageNameList = () => {
         { $unwind: { path : '$interviews' }},
         { $match :
                 { $and:
-                        [ { 'interviews.startDate': { $lte: currentDate } },
-                            {'interviews.endDate': { $gte: currentDate } } ]
+                        [ { 'interviews.openDate': { $lte: currentDate } },
+                          { 'interviews.closeDate': { $gte: currentDate } } ]
                 }
         },
         { $project : { 'projectId' : true, 'interviewSeq' : '$interviews.seq', 'app' : '$interviews.apps' }},
