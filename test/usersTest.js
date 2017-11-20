@@ -9,19 +9,23 @@ describe('Users test', () => {
 
     let data = [
         {
-            "userId" : "userId1",
-            "registrationToken" : "token1",
+            "userId": "userId1",
+            "registrationToken": "token1",
         }, {
-            "userId" : "userId2",
-            "registrationToken" : "token2",
+            "userId": "userId2",
+            "registrationToken": "token2",
         }, {
-            "userId" : "userId3",
-            "registrationToken" : "token3",
+            "userId": "userId3",
+            "registrationToken": "token3",
         }, {
-            "userId" : "userId4",
-            "registrationToken" : "token4",
+            "userId": "userId4",
+            "registrationToken": "token4",
         },
     ];
+
+    before((done) => {
+        Users.remove({}, done);
+    });
 
     beforeEach((done) => {
         Users.create(data, done);
@@ -40,13 +44,17 @@ describe('Users test', () => {
             }
         ];
 
-        getNotificationToken(appUsageList).then(result => {
-            result.length.should.be.eql(2);
+        getNotificationToken(appUsageList).then(resultArray => {
+            resultArray.length.should.be.eql(2);
 
-            result[0].userId.should.be.eql('userId1');
-            result[0].registrationToken.should.be.eql('token1');
-            result[1].userId.should.be.eql('userId2');
-            result[1].registrationToken.should.be.eql('token2');
+            resultArray.sort(function(user1, user2) {
+                return user1.userId.localeCompare(user2.userId);
+            });
+
+            resultArray[0].userId.should.be.eql('userId1');
+            resultArray[0].registrationToken.should.be.eql('token1');
+            resultArray[1].userId.should.be.eql('userId2');
+            resultArray[1].registrationToken.should.be.eql('token2');
             done();
         }).catch(err => done(err));
     });
