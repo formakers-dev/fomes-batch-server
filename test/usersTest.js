@@ -1,7 +1,7 @@
 const chai = require('chai');
 const should = chai.should();
 const Users = require('./../models/users');
-const { getUserNotificationTokenList } = require('./../jobs/users');
+const {getUserNotificationTokenList} = require('./../jobs/users');
 
 require('../db').init();
 
@@ -32,22 +32,12 @@ describe('Users test', () => {
     });
 
     it('getNotificationToken 가 호출되면 유저별 노티피케이션 토큰을 반환한다', (done) => {
-        const appUsageList = [
-            {
-                "packageName": "com.kakao.talk",
-                "userId": "userId1",
-                "totalUsedTime": 1234
-            }, {
-                "packageName": "com.nhn.android.search",
-                "userId": "userId2",
-                "totalUsedTime": 4321
-            }
-        ];
+        const userIdList = ["userId1", "userId2"];
 
-        getUserNotificationTokenList(appUsageList).then(resultArray => {
+        getUserNotificationTokenList(userIdList).then(resultArray => {
             resultArray.length.should.be.eql(2);
 
-            resultArray.sort(function(user1, user2) {
+            resultArray.sort(function (user1, user2) {
                 return user1.userId.localeCompare(user2.userId);
             });
 

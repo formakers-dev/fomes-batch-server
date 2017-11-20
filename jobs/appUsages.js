@@ -1,8 +1,7 @@
 const AppUsages = require('../models/appUsages');
 
-const getUserList = (appListByInterview) => {
-    const appList = appListByInterview.map(interview => interview.app);
-    return AppUsages.find({packageName: {$in : appList}}).sort({totalUsedTime: -1}).exec();
+const getAppUsedUserList = (interviewInfo) => {
+    return AppUsages.find({packageName: {$in: interviewInfo.apps}}).sort({totalUsedTime: -1}).exec();
 };
 
-module.exports = { getUserList };
+module.exports = {getAppUsedUserList};

@@ -2,7 +2,7 @@ const chai = require('chai');
 const should = chai.should();
 const sinon = require('sinon');
 const Projects = require('./../models/projects');
-const {getPackageNameList} = require('./../jobs/projects');
+const {getInterviewInfoListForNotification, addNotifiedUserIds} = require('./../jobs/projects');
 
 require('../db').init();
 
@@ -47,7 +47,7 @@ describe('Projects test', () => {
                 ],
                 "endDate": new Date("2017-11-05T00:00:00.000Z"),
                 "startDate": new Date("2017-11-04T00:00:00.000Z"),
-                "closeDate": new Date("2017-11-01T00:00:00.000Z"),
+                "closeDate": new Date("2017-11-02T00:00:00.000Z"),
                 "openDate": new Date("2017-10-31T00:00:00.000Z"),
                 "location": "서울 잠실",
                 "type": "온라인 인터뷰"
@@ -126,29 +126,59 @@ describe('Projects test', () => {
         Projects.create(data, done);
     });
 
-    it('getPackageNameList가 호출되면 현재 모집중인 인터뷰에 대한 유사앱 packageNameList를 반환한다 ', (done) => {
+    it('getInterviewsForNotification 가 호출되면 현재 모집중인 인터뷰에 대한 유사앱 packageNameList를 반환한다 ', (done) => {
         let clock = sinon.useFakeTimers(new Date("2017-11-02").getTime());
 
-        getPackageNameList().then(result => {
+        getInterviewInfoListForNotification().then(result => {
             result.length.should.be.eql(3);
 
-            result.sort(function(result1, result2) {
-               return result1.projectId - result2.projectId;
+            result.sort(function (result1, result2) {
+                const projectIdCompare = result1.projectId - result2.projectId;
+                return (projectIdCompare === 0) ? result1.interviewSeq - result2.interviewSeq : projectIdCompare;
             });
 
             result[0].projectId.should.be.eql(100000042);
-            result[0].app.should.be.eql('com.nhn.appbee.search');
-            result[0].interviewSeq.should.be.eql(2);
+            result[0].interviewSeq.should.be.eql(1);
+            result[0].apps.length.should.be.eql(2);
+            result[0].apps[0].should.be.eql('com.nhn.android.search');
+            result[0].apps[1].should.be.eql('com.kakao.talk');
+
             result[1].projectId.should.be.eql(100000042);
-            result[1].app.should.be.eql('com.kakao.talk');
             result[1].interviewSeq.should.be.eql(2);
+            result[1].apps.length.should.be.eql(2);
+            result[1].apps[0].should.be.eql('com.nhn.appbee.search');
+            result[1].apps[1].should.be.eql('com.kakao.talk');
+
             result[2].projectId.should.be.eql(100000043);
-            result[2].app.should.be.eql('com.nhn.android.search');
             result[2].interviewSeq.should.be.eql(1);
+            result[2].apps.length.should.be.eql(1);
+            result[2].apps[0].should.be.eql('com.nhn.android.search');
             done();
         }).catch(err => done(err));
 
         clock.restore();
+    });
+
+    it('addNotifiedUserIds 가 호출되면 노티발송대상자들의 id정보를 해당 interview에 추가한다', (done) => {
+        const interviewInfo = {
+            'projectId': 100000043,
+            'interviewSeq': 1,
+            'userIdList': ['user1', 'user2']
+        };
+
+        addNotifiedUserIds(interviewInfo).then(() => {
+            Projects.aggregate([
+                {$unwind: {path: '$interviews'}},
+                {$match: {$and: [{projectId: interviewInfo.projectId}, {'interviews.seq': interviewInfo.interviewSeq}]}}
+            ], (err, res) => {
+                res[0].projectId.should.be.eql(interviewInfo.projectId);
+                res[0].interviews.seq.should.be.eql(interviewInfo.interviewSeq);
+                res[0].interviews.notifiedUserIds.length.should.be.eql(2);
+                res[0].interviews.notifiedUserIds[0].should.be.eql('user1');
+                res[0].interviews.notifiedUserIds[1].should.be.eql('user2');
+                done();
+            });
+        }).catch(err => done(err));
     });
 
     afterEach((done) => {

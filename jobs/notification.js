@@ -2,7 +2,7 @@ const axios = require('axios');
 const config = require('../config');
 
 const sendNotification = (registrationIds) => {
-    if(!registrationIds || registrationIds.length <= 0) {
+    if (!registrationIds || registrationIds.length <= 0) {
         return;
     }
 
@@ -25,4 +25,4 @@ const sendNotification = (registrationIds) => {
     });
 };
 
-module.exports = { sendNotification };
+module.exports = {sendNotification};
