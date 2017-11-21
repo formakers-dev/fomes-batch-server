@@ -78,7 +78,13 @@ agenda.define('send notification to users', function (job, done) {
 
 agenda.on('ready', function () {
     console.log('agenda start!');
-    // agenda.now('get interview infos for notification');
 
-    agenda.start();
+    agenda.jobs({}, (err, jobs) => {
+        if(jobs && jobs.length > 0) {
+            jobs.forEach(job => job.remove());
+        }
+
+        agenda.now('get interview infos for notification');
+        agenda.start();
+    });
 });
