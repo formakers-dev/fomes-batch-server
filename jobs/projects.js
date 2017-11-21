@@ -13,7 +13,15 @@ const getInterviewInfoListForNotification = () => {
                             {'interviews.closeDate': {$gte: currentDate}}]
                 }
         },
-        {$project: {'projectId': true, 'interviewSeq': '$interviews.seq', 'apps': '$interviews.apps', 'notifiedUserIds': '$interviews.notifiedUserIds'}},
+        {
+            $project: {
+                'projectId': true,
+                'interviewSeq': '$interviews.seq',
+                'totalCount': '$interviews.totalCount',
+                'apps': '$interviews.apps',
+                'notifiedUserIds': '$interviews.notifiedUserIds'
+            }
+        },
     ]).exec();
 };
 

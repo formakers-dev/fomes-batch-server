@@ -50,7 +50,8 @@ describe('Projects test', () => {
                 "closeDate": new Date("2017-11-02T00:00:00.000Z"),
                 "openDate": new Date("2017-10-31T00:00:00.000Z"),
                 "location": "서울 잠실",
-                "type": "온라인 인터뷰"
+                "type": "온라인 인터뷰",
+                "totalCount": 5,
             },
             {
                 "seq": 2,
@@ -74,7 +75,8 @@ describe('Projects test', () => {
                 "closeDate": new Date("2017-11-03T00:00:00.000Z"),
                 "openDate": new Date("2017-11-02T00:00:00.000Z"),
                 "location": "서울 잠실",
-                "type": "온라인 인터뷰"
+                "type": "온라인 인터뷰",
+                "totalCount": 10,
             }
         ]
     },
@@ -119,7 +121,8 @@ describe('Projects test', () => {
                 "openDate": new Date("2017-11-01"),
                 "location": "서울 잠실",
                 "type": "온라인 인터뷰",
-                "notifiedUserIds": ['userId1', 'userId2']
+                "notifiedUserIds": ['userId1', 'userId2'],
+                "totalCount": 15,
             }]
         }];
 
@@ -140,6 +143,7 @@ describe('Projects test', () => {
 
             result[0].projectId.should.be.eql(100000042);
             result[0].interviewSeq.should.be.eql(1);
+            result[0].totalCount.should.be.eql(5);
             result[0].apps.length.should.be.eql(2);
             result[0].apps[0].should.be.eql('com.nhn.android.search');
             result[0].apps[1].should.be.eql('com.kakao.talk');
@@ -147,6 +151,7 @@ describe('Projects test', () => {
 
             result[1].projectId.should.be.eql(100000042);
             result[1].interviewSeq.should.be.eql(2);
+            result[1].totalCount.should.be.eql(10);
             result[1].apps.length.should.be.eql(2);
             result[1].apps[0].should.be.eql('com.nhn.appbee.search');
             result[1].apps[1].should.be.eql('com.kakao.talk');
@@ -154,12 +159,14 @@ describe('Projects test', () => {
 
             result[2].projectId.should.be.eql(100000043);
             result[2].interviewSeq.should.be.eql(1);
+            result[2].totalCount.should.be.eql(15);
             result[2].apps.length.should.be.eql(1);
             result[2].apps[0].should.be.eql('com.nhn.android.search');
             result[2].should.hasOwnProperty('notifiedUserIds');
             result[2].notifiedUserIds.length.should.be.eql(2);
             result[2].notifiedUserIds[0].should.be.eql('userId1');
             result[2].notifiedUserIds[1].should.be.eql('userId2');
+
             done();
         }).catch(err => done(err));
 
