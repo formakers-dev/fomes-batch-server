@@ -177,7 +177,7 @@ describe('Projects test', () => {
         const interviewInfo = {
             'projectId': 100000043,
             'interviewSeq': 1,
-            'userIdList': ['user1', 'user2']
+            'userIds': ['userId3', 'userId4']
         };
 
         addNotifiedUserIds(interviewInfo).then(() => {
@@ -187,9 +187,11 @@ describe('Projects test', () => {
             ], (err, res) => {
                 res[0].projectId.should.be.eql(interviewInfo.projectId);
                 res[0].interviews.seq.should.be.eql(interviewInfo.interviewSeq);
-                res[0].interviews.notifiedUserIds.length.should.be.eql(2);
-                res[0].interviews.notifiedUserIds[0].should.be.eql('user1');
-                res[0].interviews.notifiedUserIds[1].should.be.eql('user2');
+                res[0].interviews.notifiedUserIds.length.should.be.eql(4);
+                res[0].interviews.notifiedUserIds[0].should.be.eql('userId1');
+                res[0].interviews.notifiedUserIds[1].should.be.eql('userId2');
+                res[0].interviews.notifiedUserIds[2].should.be.eql('userId3');
+                res[0].interviews.notifiedUserIds[3].should.be.eql('userId4');
                 done();
             });
         }).catch(err => done(err));

@@ -31,7 +31,7 @@ const addNotifiedUserIds = (interviewInfo) => {
             'projectId': interviewInfo.projectId,
             'interviews.seq': interviewInfo.interviewSeq,
         },
-        {$push: {'interviews.$.notifiedUserIds': {$each: interviewInfo.userIdList}}},
+        {$push: {'interviews.$.notifiedUserIds': {$each: interviewInfo.userIds}}},
         {upsert: true}).exec();
 };
 

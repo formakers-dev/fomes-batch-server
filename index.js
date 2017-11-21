@@ -4,11 +4,11 @@ const {getAppUsedUserList} = require('./jobs/appUsages');
 const {getInterviewInfoListForNotification, addNotifiedUserIds} = require('./jobs/projects');
 const {getUserNotificationTokenList} = require('./jobs/users');
 const {sendNotification} = require('./jobs/notification');
+const {addNotificationInterview, getAllNotificationInterviews, removeNotificationInterview} = require('./jobs/notificationInterviews');
 
 require('./db').init();
 
 const agenda = new Agenda({db: {address: config.agendaDBUrl, collection: 'agenda-jobs'}});
-const notificationPushTime = '11:30';
 
 agenda.define('get interview infos for notification', (job, done) => {
     console.log('[job] get interview infos for notification');
@@ -33,9 +33,10 @@ agenda.define('get target user list for interview', function (job, done) {
         console.log(appUsedUserList);
 
         if (appUsedUserList && appUsedUserList.length > 0) {
-            interviewInfo.userIdList = appUsedUserList.map(user => user.userId);
+            interviewInfo.userIds = appUsedUserList.map(user => user.userId);
             addNotifiedUserIds(interviewInfo).then(() => {
-                agenda.now('get notification token list each user', {interviewInfo: interviewInfo});
+                console.log('addNotifiedUserIds done');
+                agenda.now('add interviewInfo with userIds to notification-interviews collection', {interviewInfo: interviewInfo});
                 done();
             }).catch(err => {
                 console.log(err);
@@ -50,15 +51,47 @@ agenda.define('get target user list for interview', function (job, done) {
     });
 });
 
+agenda.define('add interviewInfo with userIds to notification-interviews collection', function(job, done) {
+    console.log('[job] add interviewInfo with userIds to notification-interviews collection');
+    const interviewInfo = job.attrs.data.interviewInfo;
+
+    addNotificationInterview(interviewInfo).then(() => {
+        console.log('addNotificationInterview done');
+        done();
+    }).catch(err => {
+        console.log(err);
+        done(err);
+    });
+});
+
+agenda.define('start to send notification', function(job, done) {
+    console.log('[job] start to send notification');
+
+    getAllNotificationInterviews().then((interviewArray) => {
+        console.log(interviewArray);
+
+        interviewArray.forEach(interviewInfo => {
+            agenda.now('get notification token list each user', {interviewInfo : interviewInfo});
+        });
+
+        done();
+    }).catch(err => {
+        console.log(err);
+        done(err);
+    });
+});
+
+
 agenda.define('get notification token list each user', function (job, done) {
     console.log('[job] get notification token list each user');
-    const userIdList = job.attrs.data.interviewInfo.userIdList;
+    const interviewInfo = job.attrs.data.interviewInfo;
 
-    getUserNotificationTokenList(userIdList).then(userTokenList => {
+    getUserNotificationTokenList(interviewInfo.userIds).then(userTokenList => {
         console.log(userTokenList);
+
         const notificationIdList = userTokenList.map(userToken => userToken.registrationToken);
 
-        agenda.schedule(notificationPushTime, 'send notification to users', {notificationIdList: notificationIdList});
+        agenda.now('send notification to users', {notificationIdList: notificationIdList, interviewInfo: interviewInfo});
 
         done();
     }).catch(err => {
@@ -70,9 +103,24 @@ agenda.define('get notification token list each user', function (job, done) {
 agenda.define('send notification to users', function (job, done) {
     console.log('[job] send notification to users');
     const notificationIdList = job.attrs.data.notificationIdList;
+    const interviewInfo = job.attrs.data.interviewInfo;
 
     sendNotification(notificationIdList).then(response => {
-        console.log(response);
+        console.log('sendNotification done');
+        agenda.now('remove notification-interviews collection', {interviewInfo: interviewInfo});
+        done();
+    }).catch(err => {
+        console.log(err);
+        done(err);
+    });
+});
+
+agenda.define('remove notification-interviews collection', function (job, done) {
+    console.log('[job] remove notification-interviews collection');
+    const interviewInfo = job.attrs.data.interviewInfo;
+
+    removeNotificationInterview(interviewInfo).then(() => {
+        console.log('removeNotificationInterview done');
         done();
     }).catch(err => {
         console.log(err);
@@ -89,6 +137,7 @@ agenda.on('ready', function () {
         }
 
         agenda.every('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
+        agenda.every('30 11 * * *', 'start to send notification');
         agenda.start();
     });
 });
