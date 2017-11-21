@@ -8,9 +8,11 @@ const {sendNotification} = require('./jobs/notification');
 require('./db').init();
 
 const agenda = new Agenda({db: {address: config.agendaDBUrl, collection: 'agenda-jobs'}});
+const notificationPushTime = '11:30';
 
 agenda.define('get interview infos for notification', (job, done) => {
     console.log('[job] get interview infos for notification');
+
     getInterviewInfoListForNotification().then((interviewInfoList) => {
         console.log(interviewInfoList);
         interviewInfoList.forEach(interviewInfo => {
@@ -55,7 +57,9 @@ agenda.define('get notification token list each user', function (job, done) {
     getUserNotificationTokenList(userIdList).then(userTokenList => {
         console.log(userTokenList);
         const notificationIdList = userTokenList.map(userToken => userToken.registrationToken);
-        agenda.now('send notification to users', {notificationIdList: notificationIdList});
+
+        agenda.schedule(notificationPushTime, 'send notification to users', {notificationIdList: notificationIdList});
+
         done();
     }).catch(err => {
         console.log(err);
@@ -84,7 +88,7 @@ agenda.on('ready', function () {
             jobs.forEach(job => job.remove());
         }
 
-        agenda.now('get interview infos for notification');
+        agenda.every('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
         agenda.start();
     });
 });
