@@ -8,7 +8,7 @@ require('../db').init();
 
 describe('Projects test', () => {
 
-    let data = [{
+    const data = [{
         "projectId": 100000042,
         "name": "프로젝트",
         "introduce": "한줄 소개",
@@ -118,7 +118,8 @@ describe('Projects test', () => {
                 "closeDate": new Date("2017-11-02"),
                 "openDate": new Date("2017-11-01"),
                 "location": "서울 잠실",
-                "type": "온라인 인터뷰"
+                "type": "온라인 인터뷰",
+                "notifiedUserIds": ['userId1', 'userId2']
             }]
         }];
 
@@ -142,17 +143,23 @@ describe('Projects test', () => {
             result[0].apps.length.should.be.eql(2);
             result[0].apps[0].should.be.eql('com.nhn.android.search');
             result[0].apps[1].should.be.eql('com.kakao.talk');
+            result[0].should.not.hasOwnProperty('notifiedUserIds');
 
             result[1].projectId.should.be.eql(100000042);
             result[1].interviewSeq.should.be.eql(2);
             result[1].apps.length.should.be.eql(2);
             result[1].apps[0].should.be.eql('com.nhn.appbee.search');
             result[1].apps[1].should.be.eql('com.kakao.talk');
+            result[1].should.not.hasOwnProperty('notifiedUserIds');
 
             result[2].projectId.should.be.eql(100000043);
             result[2].interviewSeq.should.be.eql(1);
             result[2].apps.length.should.be.eql(1);
             result[2].apps[0].should.be.eql('com.nhn.android.search');
+            result[2].should.hasOwnProperty('notifiedUserIds');
+            result[2].notifiedUserIds.length.should.be.eql(2);
+            result[2].notifiedUserIds[0].should.be.eql('userId1');
+            result[2].notifiedUserIds[1].should.be.eql('userId2');
             done();
         }).catch(err => done(err));
 
