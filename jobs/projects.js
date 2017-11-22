@@ -2,6 +2,10 @@ const Projects = require('../models/projects');
 
 const getInterviewInfoListForNotification = () => {
     const currentDate = new Date();
+    currentDate.setUTCHours(0, 0, 0, 0);
+
+    console.log('BASE DATE : ');
+    console.log(currentDate);
 
     return Projects.aggregate([
         {$unwind: {path: '$interviews'}},

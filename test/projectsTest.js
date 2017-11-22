@@ -115,10 +115,10 @@ describe('Projects test', () => {
                 "apps": [
                     "com.nhn.android.search"
                 ],
-                "endDate": new Date("2017-11-04"),
-                "startDate": new Date("2017-11-02"),
-                "closeDate": new Date("2017-11-02"),
-                "openDate": new Date("2017-11-01"),
+                "endDate": new Date("2017-11-04T00:00:00.000Z"),
+                "startDate": new Date("2017-11-02T00:00:00.000Z"),
+                "closeDate": new Date("2017-11-02T00:00:00.000Z"),
+                "openDate": new Date("2017-11-01T00:00:00.000Z"),
                 "location": "서울 잠실",
                 "type": "온라인 인터뷰",
                 "notifiedUserIds": ['userId1', 'userId2'],
@@ -130,48 +130,57 @@ describe('Projects test', () => {
         Projects.create(data, done);
     });
 
-    it('getInterviewsForNotification 가 호출되면 현재 모집중인 인터뷰에 대한 유사앱 packageNameList를 반환한다 ', (done) => {
-        let clock = sinon.useFakeTimers(new Date("2017-11-02").getTime());
+    describe('getInterviewsForNotification', () => {
+        let clock;
 
-        getInterviewInfoListForNotification().then(result => {
-            result.length.should.be.eql(3);
+        beforeEach(() => {
+            clock = sinon.useFakeTimers(new Date("2017-11-02").getTime());
+        });
 
-            result.sort(function (result1, result2) {
-                const projectIdCompare = result1.projectId - result2.projectId;
-                return (projectIdCompare === 0) ? result1.interviewSeq - result2.interviewSeq : projectIdCompare;
-            });
+        it('현재 모집중인 인터뷰에 대한 유사앱 packageNameList를 반환한다 ', (done) => {
+            getInterviewInfoListForNotification().then(result => {
+                result.length.should.be.eql(3);
 
-            result[0].projectId.should.be.eql(100000042);
-            result[0].interviewSeq.should.be.eql(1);
-            result[0].totalCount.should.be.eql(5);
-            result[0].apps.length.should.be.eql(2);
-            result[0].apps[0].should.be.eql('com.nhn.android.search');
-            result[0].apps[1].should.be.eql('com.kakao.talk');
-            result[0].should.not.hasOwnProperty('notifiedUserIds');
+                result.sort(function (result1, result2) {
+                    const projectIdCompare = result1.projectId - result2.projectId;
+                    return (projectIdCompare === 0) ? result1.interviewSeq - result2.interviewSeq : projectIdCompare;
+                });
 
-            result[1].projectId.should.be.eql(100000042);
-            result[1].interviewSeq.should.be.eql(2);
-            result[1].totalCount.should.be.eql(10);
-            result[1].apps.length.should.be.eql(2);
-            result[1].apps[0].should.be.eql('com.nhn.appbee.search');
-            result[1].apps[1].should.be.eql('com.kakao.talk');
-            result[1].should.not.hasOwnProperty('notifiedUserIds');
+                result[0].projectId.should.be.eql(100000042);
+                result[0].interviewSeq.should.be.eql(1);
+                result[0].totalCount.should.be.eql(5);
+                result[0].apps.length.should.be.eql(2);
+                result[0].apps[0].should.be.eql('com.nhn.android.search');
+                result[0].apps[1].should.be.eql('com.kakao.talk');
+                result[0].should.not.hasOwnProperty('notifiedUserIds');
 
-            result[2].projectId.should.be.eql(100000043);
-            result[2].interviewSeq.should.be.eql(1);
-            result[2].totalCount.should.be.eql(15);
-            result[2].apps.length.should.be.eql(1);
-            result[2].apps[0].should.be.eql('com.nhn.android.search');
-            result[2].should.hasOwnProperty('notifiedUserIds');
-            result[2].notifiedUserIds.length.should.be.eql(2);
-            result[2].notifiedUserIds[0].should.be.eql('userId1');
-            result[2].notifiedUserIds[1].should.be.eql('userId2');
+                result[1].projectId.should.be.eql(100000042);
+                result[1].interviewSeq.should.be.eql(2);
+                result[1].totalCount.should.be.eql(10);
+                result[1].apps.length.should.be.eql(2);
+                result[1].apps[0].should.be.eql('com.nhn.appbee.search');
+                result[1].apps[1].should.be.eql('com.kakao.talk');
+                result[1].should.not.hasOwnProperty('notifiedUserIds');
 
-            done();
-        }).catch(err => done(err));
+                result[2].projectId.should.be.eql(100000043);
+                result[2].interviewSeq.should.be.eql(1);
+                result[2].totalCount.should.be.eql(15);
+                result[2].apps.length.should.be.eql(1);
+                result[2].apps[0].should.be.eql('com.nhn.android.search');
+                result[2].should.hasOwnProperty('notifiedUserIds');
+                result[2].notifiedUserIds.length.should.be.eql(2);
+                result[2].notifiedUserIds[0].should.be.eql('userId1');
+                result[2].notifiedUserIds[1].should.be.eql('userId2');
 
-        clock.restore();
+                done();
+            }).catch(err => done(err));
+        });
+
+        afterEach(() => {
+            clock.restore();
+        });
     });
+
 
     it('addNotifiedUserIds 가 호출되면 노티발송대상자들의 id정보를 해당 interview에 추가한다', (done) => {
         const interviewInfo = {
