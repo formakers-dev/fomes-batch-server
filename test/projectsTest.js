@@ -45,8 +45,7 @@ describe('Projects test', () => {
                     "com.nhn.android.search",
                     "com.kakao.talk"
                 ],
-                "endDate": new Date("2017-11-05T00:00:00.000Z"),
-                "startDate": new Date("2017-11-04T00:00:00.000Z"),
+                "interviewDate": new Date("2017-11-04T00:00:00.000Z"),
                 "closeDate": new Date("2017-11-02T00:00:00.000Z"),
                 "openDate": new Date("2017-10-31T00:00:00.000Z"),
                 "location": "서울 잠실",
@@ -70,8 +69,7 @@ describe('Projects test', () => {
                     "com.nhn.appbee.search",
                     "com.kakao.talk"
                 ],
-                "endDate": new Date("2017-11-05T00:00:00.000Z"),
-                "startDate": new Date("2017-11-04T00:00:00.000Z"),
+                "interviewDate": new Date("2017-11-04T00:00:00.000Z"),
                 "closeDate": new Date("2017-11-03T00:00:00.000Z"),
                 "openDate": new Date("2017-11-02T00:00:00.000Z"),
                 "location": "서울 잠실",
@@ -115,8 +113,7 @@ describe('Projects test', () => {
                 "apps": [
                     "com.nhn.android.search"
                 ],
-                "endDate": new Date("2017-11-04T00:00:00.000Z"),
-                "startDate": new Date("2017-11-02T00:00:00.000Z"),
+                "interviewDate": new Date("2017-11-02T00:00:00.000Z"),
                 "closeDate": new Date("2017-11-02T00:00:00.000Z"),
                 "openDate": new Date("2017-11-01T00:00:00.000Z"),
                 "location": "서울 잠실",
