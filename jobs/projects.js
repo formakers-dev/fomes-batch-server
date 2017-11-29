@@ -21,6 +21,8 @@ const getInterviewInfoListForNotification = () => {
             $project: {
                 'projectId': true,
                 'interviewSeq': '$interviews.seq',
+                'projectName': '$name',
+                'projectIntroduce': '$introduce',
                 'totalCount': '$interviews.totalCount',
                 'apps': '$interviews.apps',
                 'notifiedUserIds': '$interviews.notifiedUserIds'

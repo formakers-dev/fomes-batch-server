@@ -19,7 +19,10 @@ describe('Notification test', () => {
         const notificationIdList = ['token1', 'token2', 'token3'];
         const testProjectId = 'testProjectId';
         const testInterviewSeq = 1;
-        sendNotification(notificationIdList, testProjectId, testInterviewSeq)
+        const projectName = '툰스토리';
+        const projectIntroduce = '문장을 쓰면 툰으로 변경해주는 인공지능 서비스';
+
+        sendNotification(notificationIdList, testProjectId, testInterviewSeq, projectName, projectIntroduce)
             .then(spyOnResponse)
             .catch(err => done(err));
 
@@ -29,8 +32,9 @@ describe('Notification test', () => {
             requestData.registration_ids[0].should.be.eql('token1');
             requestData.registration_ids[1].should.be.eql('token2');
             requestData.registration_ids[2].should.be.eql('token3');
-            requestData.data.projectId.should.be.eql('testProjectId');
-            requestData.data.interviewSeq.should.be.eql(1);
+            requestData.notification.title.should.be.eql('[툰스토리] 문장을 쓰면 툰으로 변경해주는 인공지능 서비스');
+            requestData.data['EXTRA_PROJECT_ID'].should.be.eql('testProjectId');
+            requestData.data['EXTRA_INTERVIEW_SEQ'].should.be.eql(1);
             done();
         })
     });

@@ -11,11 +11,15 @@ describe('NotificationInterviews test', () => {
             {
                 projectId: 1000001,
                 interviewSeq: 1,
+                projectName: '툰스토리',
+                projectIntroduce: '문장을 쓰면 툰으로 변경해주는 인공지능 서비스',
                 userIds: ['userId1','userId2','userId3']
             },
             {
                 projectId: 1000001,
                 interviewSeq: 2,
+                projectName: '리얼포토',
+                projectIntroduce: '사진을 찍으면 툰으로 변경해주는 인공지능 서비스',
                 userIds: ['userId4','userId5']
             }
         ];
@@ -47,6 +51,8 @@ describe('NotificationInterviews test', () => {
         const data = {
             projectId: 1000003,
             interviewSeq: 3,
+            projectName: '앱비',
+            projectIntroduce: '깁미더 리워드',
             userIds: ['userId21','userId22','userId23','userId24']
         };
 
@@ -55,6 +61,8 @@ describe('NotificationInterviews test', () => {
                 interviewArray.length.should.be.eql(3);
                 interviewArray[2].projectId.should.be.eql(1000003);
                 interviewArray[2].interviewSeq.should.be.eql(3);
+                interviewArray[2].projectName.should.be.eql('앱비');
+                interviewArray[2].projectIntroduce.should.be.eql('깁미더 리워드');
                 interviewArray[2].userIds.length.should.be.eql(4);
                 interviewArray[2].userIds.should.be.eql(['userId21','userId22','userId23','userId24']);
                 done();

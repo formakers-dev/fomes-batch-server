@@ -8,7 +8,9 @@ const addNotificationInterview = (interviewInfo) => {
     return NotificationInterviews.create({
         projectId: interviewInfo.projectId,
         interviewSeq: interviewInfo.interviewSeq,
-        userIds: interviewInfo.userIds
+        projectName: interviewInfo.projectName,
+        projectIntroduce: interviewInfo.projectIntroduce,
+        userIds: interviewInfo.userIds,
     });
 };
 

@@ -81,7 +81,7 @@ describe('Projects test', () => {
         {
             "projectId": 100000043,
             "name": "프로젝트2",
-            "introduce": "한줄 소개",
+            "introduce": "한줄 소개 입니다....",
             "description": "입니다.",
             "status": "registered",
             "interviewer": {
@@ -145,6 +145,8 @@ describe('Projects test', () => {
 
                 result[0].projectId.should.be.eql(100000042);
                 result[0].interviewSeq.should.be.eql(1);
+                result[0].projectName.should.be.eql('프로젝트');
+                result[0].projectIntroduce.should.be.eql('한줄 소개');
                 result[0].totalCount.should.be.eql(5);
                 result[0].apps.length.should.be.eql(2);
                 result[0].apps[0].should.be.eql('com.nhn.android.search');
@@ -153,6 +155,8 @@ describe('Projects test', () => {
 
                 result[1].projectId.should.be.eql(100000042);
                 result[1].interviewSeq.should.be.eql(2);
+                result[1].projectName.should.be.eql('프로젝트');
+                result[1].projectIntroduce.should.be.eql('한줄 소개');
                 result[1].totalCount.should.be.eql(10);
                 result[1].apps.length.should.be.eql(2);
                 result[1].apps[0].should.be.eql('com.nhn.appbee.search');
@@ -161,6 +165,8 @@ describe('Projects test', () => {
 
                 result[2].projectId.should.be.eql(100000043);
                 result[2].interviewSeq.should.be.eql(1);
+                result[2].projectName.should.be.eql('프로젝트2');
+                result[2].projectIntroduce.should.be.eql('한줄 소개 입니다....');
                 result[2].totalCount.should.be.eql(15);
                 result[2].apps.length.should.be.eql(1);
                 result[2].apps[0].should.be.eql('com.nhn.android.search');

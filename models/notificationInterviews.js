@@ -4,6 +4,8 @@ const Schema = mongoose.Schema;
 const notificationInterviewsSchema = new Schema({
     projectId: Number,
     interviewSeq: Number,
+    projectName: String,
+    projectIntroduce: String,
     userIds: Array
 });
 
