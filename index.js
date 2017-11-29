@@ -105,7 +105,7 @@ agenda.define('send notification to users', function (job, done) {
     const notificationIdList = job.attrs.data.notificationIdList;
     const interviewInfo = job.attrs.data.interviewInfo;
 
-    sendNotification(notificationIdList).then(response => {
+    sendNotification(notificationIdList, interviewInfo.projectId, interviewInfo.interviewSeq).then(response => {
         console.log('sendNotification done');
         agenda.now('remove notification-interviews collection', {interviewInfo: interviewInfo});
         done();

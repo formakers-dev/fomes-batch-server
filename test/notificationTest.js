@@ -17,7 +17,9 @@ describe('Notification test', () => {
 
         let spyOnResponse = sinon.spy();
         const notificationIdList = ['token1', 'token2', 'token3'];
-        sendNotification(notificationIdList)
+        const testProjectId = 'testProjectId';
+        const testInterviewSeq = 1;
+        sendNotification(notificationIdList, testProjectId, testInterviewSeq)
             .then(spyOnResponse)
             .catch(err => done(err));
 
@@ -27,6 +29,8 @@ describe('Notification test', () => {
             requestData.registration_ids[0].should.be.eql('token1');
             requestData.registration_ids[1].should.be.eql('token2');
             requestData.registration_ids[2].should.be.eql('token3');
+            requestData.data.projectId.should.be.eql('testProjectId');
+            requestData.data.interviewSeq.should.be.eql(1);
             done();
         })
     });

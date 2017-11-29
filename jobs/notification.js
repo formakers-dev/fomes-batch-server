@@ -1,7 +1,7 @@
 const axios = require('axios');
 const config = require('../config');
 
-const sendNotification = (registrationIds) => {
+const sendNotification = (registrationIds, projectId, interviewSeq) => {
     if (!registrationIds || registrationIds.length <= 0) {
         return;
     }
@@ -14,7 +14,11 @@ const sendNotification = (registrationIds) => {
 
     const data = JSON.stringify({
         'notification': notification,
-        'registration_ids': registrationIds
+        'registration_ids': registrationIds,
+        'data' : {
+            'projectId' : projectId,
+            'interviewSeq': interviewSeq
+        }
     });
 
     return axios.post('https://fcm.googleapis.com/fcm/send', data, {
