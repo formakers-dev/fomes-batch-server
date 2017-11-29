@@ -63,7 +63,13 @@ describe('AppUsages test', () => {
             "projectId": 100000060,
             "interviewSeq": 1511134734116,
             "totalCount": 5,
-            "apps": ['com.nhn.search', 'com.kakao.talk']
+            "apps": [{
+                packageName: 'com.nhn.search',
+                appName: '네이버검색'
+            }, {
+                packageName: 'com.kakao.talk',
+                appName: '카카오톡'
+            }]
         };
 
         getAppUsedUserList(interviewInfo).then(appUsedUserList => {
@@ -87,7 +93,10 @@ describe('AppUsages test', () => {
             "projectId": 100000061,
             "interviewSeq": 123,
             "totalCount": 5,
-            "apps": ['com.google.maps']
+            "apps": [{
+                packageName: 'com.google.maps',
+                appName: '구글맵'
+            }]
         };
 
         getAppUsedUserList(interviewInfo).then(appUsedUserList => {
@@ -108,7 +117,10 @@ describe('AppUsages test', () => {
             "projectId": 100000060,
             "interviewSeq": 124,
             "totalCount": 5,
-            "apps": ['com.google.maps'],
+            "apps": [{
+                packageName: 'com.google.maps',
+                appName: '구글맵'
+            }],
             "notifiedUserIds": ['userId7']
         };
 
