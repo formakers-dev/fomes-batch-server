@@ -76,9 +76,9 @@ agenda.define('start to send notification', function(job, done) {
 
         done();
     }).catch(err => {
-        console.log(err);
+        console.log);(err);
         done(err);
-    });
+    }
 });
 
 
@@ -140,8 +140,8 @@ agenda.on('ready', function () {
         //agenda.every('30 11 * * *', 'start to send notification');
 
         // test
-        agenda.every('*/1 * * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        agenda.every('*/1 * * * *', 'start to send notification');
+        agenda.every('30 seconds', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
+        agenda.every('30 seconds', 'start to send notification');
 
         agenda.start();
     });
