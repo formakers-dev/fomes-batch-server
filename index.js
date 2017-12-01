@@ -76,9 +76,9 @@ agenda.define('start to send notification', function(job, done) {
 
         done();
     }).catch(err => {
-        console.log);(err);
+        console.log(err);
         done(err);
-    }
+    });
 });
 
 
