@@ -143,8 +143,8 @@ agenda.on('ready', function () {
         // agenda.every('30 seconds', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
         // agenda.every('30 seconds', 'start to send notification');
 
-        agenda.every('15 15 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        agenda.every('16 15 * * *', 'start to send notification');
+        agenda.every('19 15 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
+        agenda.every('20 15 * * *', 'start to send notification');
 
         agenda.start();
     });
