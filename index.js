@@ -136,15 +136,12 @@ agenda.on('ready', function () {
             jobs.forEach(job => job.remove());
         }
 
-        // agenda.every('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        // agenda.every('30 11 * * *', 'start to send notification');
+        agenda.every('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
+        agenda.every('30 11 * * *', 'start to send notification');
 
         // test
         // agenda.every('30 seconds', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
         // agenda.every('30 seconds', 'start to send notification');
-
-        agenda.every('21 15 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        agenda.every('22 15 * * *', 'start to send notification');
 
         agenda.start();
     });
