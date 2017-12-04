@@ -138,7 +138,7 @@ agenda.on('ready', function () {
 
         // batch
         agenda.every('25 11 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        agenda.every('28 11 * * *', 'start to send notification');
+        agenda.every('34 11 * * *', 'start to send notification');
 
         // test
         // agenda.every('30 seconds', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
