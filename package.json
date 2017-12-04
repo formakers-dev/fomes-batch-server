@@ -6,6 +6,7 @@
   "dependencies": {
     "agenda": "^1.0.3",
     "axios": "^0.17.1",
+    "forever": "^0.15.3",
     "mongoose": "^4.13.4",
     "mongoose-auto-increment": "^5.0.1"
   },
@@ -16,7 +17,7 @@
     "sinon": "^4.1.2"
   },
   "scripts": {
-    "start": "export NODE_ENV=development && node index.js",
+    "start": "export NODE_ENV=development && node_modules/forever/bin/forever index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "appbee",
