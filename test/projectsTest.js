@@ -45,9 +45,9 @@ describe('Projects test', () => {
                     "com.nhn.android.search",
                     "com.kakao.talk"
                 ],
-                "interviewDate": new Date("2017-11-04T00:00:00.000Z"),
-                "closeDate": new Date("2017-11-02T00:00:00.000Z"),
-                "openDate": new Date("2017-10-31T00:00:00.000Z"),
+                "interviewDate": new Date("2017-11-04T14:59:59.999Z"),
+                "closeDate": new Date("2017-11-02T14:59:59.999Z"),
+                "openDate": new Date("2017-10-30T15:00:00.000Z"),
                 "location": "서울 잠실",
                 "type": "온라인 인터뷰",
                 "totalCount": 5,
@@ -69,9 +69,9 @@ describe('Projects test', () => {
                     "com.nhn.appbee.search",
                     "com.kakao.talk"
                 ],
-                "interviewDate": new Date("2017-11-04T00:00:00.000Z"),
-                "closeDate": new Date("2017-11-03T00:00:00.000Z"),
-                "openDate": new Date("2017-11-02T00:00:00.000Z"),
+                "interviewDate": new Date("2017-11-04T14:59:59.999Z"),
+                "closeDate": new Date("2017-11-03T14:59:59.999Z"),
+                "openDate": new Date("2017-11-01T15:00:00.000Z"),
                 "location": "서울 잠실",
                 "type": "온라인 인터뷰",
                 "totalCount": 10,
@@ -113,9 +113,32 @@ describe('Projects test', () => {
                 "apps": [
                     "com.nhn.android.search"
                 ],
-                "interviewDate": new Date("2017-11-02T00:00:00.000Z"),
-                "closeDate": new Date("2017-11-02T00:00:00.000Z"),
-                "openDate": new Date("2017-11-01T00:00:00.000Z"),
+                "interviewDate": new Date("2017-11-01T14:59:59.999Z"),
+                "closeDate": new Date("2017-10-31T14:59:59.999Z"),
+                "openDate": new Date("2017-10-29T15:00:00.000Z"),
+                "location": "서울 잠실",
+                "type": "온라인 인터뷰",
+                "notifiedUserIds": ['userId1', 'userId2'],
+                "totalCount": 15,
+            },{
+                "seq": 2,
+                "status": "registered",
+                "plans": [
+                    {
+                        "plan": "준비",
+                        "minute": 10
+                    },
+                    {
+                        "plan": "테스트",
+                        "minute": 20
+                    }
+                ],
+                "apps": [
+                    "com.nhn.android.search"
+                ],
+                "interviewDate": new Date("2017-11-03T14:59:59.999Z"),
+                "closeDate": new Date("2017-11-02T14:59:59.999Z"),
+                "openDate": new Date("2017-10-31T15:00:00.000Z"),
                 "location": "서울 잠실",
                 "type": "온라인 인터뷰",
                 "notifiedUserIds": ['userId1', 'userId2'],
@@ -131,7 +154,7 @@ describe('Projects test', () => {
         let clock;
 
         beforeEach(() => {
-            clock = sinon.useFakeTimers(new Date("2017-11-02").getTime());
+            clock = sinon.useFakeTimers(new Date("2017-11-01T18:00:00.000Z").getTime());    //한국기준 11월2일 오전3시
         });
 
         it('현재 모집중인 인터뷰에 대한 유사앱 packageNameList를 반환한다 ', (done) => {
@@ -164,7 +187,7 @@ describe('Projects test', () => {
                 result[1].should.not.hasOwnProperty('notifiedUserIds');
 
                 result[2].projectId.should.be.eql(100000043);
-                result[2].interviewSeq.should.be.eql(1);
+                result[2].interviewSeq.should.be.eql(2);
                 result[2].projectName.should.be.eql('프로젝트2');
                 result[2].projectIntroduce.should.be.eql('한줄 소개 입니다....');
                 result[2].totalCount.should.be.eql(15);
@@ -213,8 +236,3 @@ describe('Projects test', () => {
         Projects.remove({}, done);
     });
 });
-
-
-
-
-
