@@ -4,6 +4,7 @@ const {getAppUsedUserList} = require('./jobs/appUsages');
 const {getInterviewInfoListForNotification, addNotifiedUserIds} = require('./jobs/projects');
 const {getUserNotificationTokenList} = require('./jobs/users');
 const {sendNotification} = require('./jobs/notification');
+const {insertUncrawledApps} = require('./jobs/uncrawledApps');
 const {addNotificationInterview, getAllNotificationInterviews, removeNotificationInterview} = require('./jobs/notificationInterviews');
 
 require('./db').init();
@@ -128,6 +129,14 @@ agenda.define('remove notification-interviews collection', function (job, done) 
     });
 });
 
+agenda.define('insert uncrawled-apps from apps and app-usages', function(job, done) {
+    console.log('[job] insert uncrawled-apps from apps and app-usages');
+    insertUncrawledApps().then(() => {
+        console.log('insert uncrawled-apps from apps and app-usages done');
+        done();
+    })
+});
+
 agenda.on('ready', function () {
     console.log('agenda start!');
 
@@ -144,6 +153,7 @@ agenda.on('ready', function () {
         // agenda.every('30 seconds', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
         // agenda.every('30 seconds', 'start to send notification');
 
+        // agenda.now('insert uncrawled-apps from apps and app-usages');
         agenda.start();
     });
 });
