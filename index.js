@@ -6,6 +6,7 @@ const {getUserNotificationTokenList} = require('./jobs/users');
 const {sendNotification} = require('./jobs/notification');
 const {insertUncrawledApps} = require('./jobs/uncrawledApps');
 const {addNotificationInterview, getAllNotificationInterviews, removeNotificationInterview} = require('./jobs/notificationInterviews');
+const {backup} = require('./jobs/shortTermStats');
 
 require('./db').init();
 
@@ -52,7 +53,7 @@ agenda.define('get target user list for interview', function (job, done) {
     });
 });
 
-agenda.define('add interviewInfo with userIds to notification-interviews collection', function(job, done) {
+agenda.define('add interviewInfo with userIds to notification-interviews collection', function (job, done) {
     console.log('[job] add interviewInfo with userIds to notification-interviews collection');
     const interviewInfo = job.attrs.data.interviewInfo;
 
@@ -65,14 +66,14 @@ agenda.define('add interviewInfo with userIds to notification-interviews collect
     });
 });
 
-agenda.define('start to send notification', function(job, done) {
+agenda.define('start to send notification', function (job, done) {
     console.log('[job] start to send notification');
 
     getAllNotificationInterviews().then((interviewArray) => {
         console.log(interviewArray);
 
         interviewArray.forEach(interviewInfo => {
-            agenda.now('get notification token list each user', {interviewInfo : interviewInfo});
+            agenda.now('get notification token list each user', {interviewInfo: interviewInfo});
         });
 
         done();
@@ -92,7 +93,10 @@ agenda.define('get notification token list each user', function (job, done) {
 
         const notificationIdList = userTokenList.map(userToken => userToken.registrationToken);
 
-        agenda.now('send notification to users', {notificationIdList: notificationIdList, interviewInfo: interviewInfo});
+        agenda.now('send notification to users', {
+            notificationIdList: notificationIdList,
+            interviewInfo: interviewInfo
+        });
 
         done();
     }).catch(err => {
@@ -129,7 +133,7 @@ agenda.define('remove notification-interviews collection', function (job, done) 
     });
 });
 
-agenda.define('insert uncrawled-apps from apps and app-usages', function(job, done) {
+agenda.define('insert uncrawled-apps from apps and app-usages', function (job, done) {
     console.log('[job] insert uncrawled-apps from apps and app-usages');
     insertUncrawledApps().then(() => {
         console.log('insert uncrawled-apps from apps and app-usages done');
@@ -137,11 +141,23 @@ agenda.define('insert uncrawled-apps from apps and app-usages', function(job, do
     })
 });
 
+agenda.define('backup for shortTermStats', function (job, done) {
+    console.log('[job] backup for shortTermStats');
+
+    backup(new Date().getTime() - 30 * 60 * 1000, '/Users/act/backup/short-term-stats-backup').then((result) => {
+        console.log('backup for shortTermStats done');
+        done();
+    }).catch(err => {
+        console.log(err);
+        done(err);
+    });
+});
+
 agenda.on('ready', function () {
     console.log('agenda start!');
 
     agenda.jobs({}, (err, jobs) => {
-        if(jobs && jobs.length > 0) {
+        if (jobs && jobs.length > 0) {
             jobs.forEach(job => job.remove());
         }
 
@@ -152,8 +168,9 @@ agenda.on('ready', function () {
         // test
         // agenda.every('30 seconds', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
         // agenda.every('30 seconds', 'start to send notification');
-
         // agenda.now('insert uncrawled-apps from apps and app-usages');
+        // agenda.now('backup for shortTermStats');
+
         agenda.start();
     });
 });
