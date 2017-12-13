@@ -11,6 +11,7 @@ const addNotificationInterview = (interviewInfo) => {
         projectName: interviewInfo.projectName,
         projectIntroduce: interviewInfo.projectIntroduce,
         userIds: interviewInfo.userIds,
+        notiType: interviewInfo.notiType,
     });
 };
 

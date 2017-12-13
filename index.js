@@ -1,7 +1,7 @@
 const Agenda = require('agenda');
 const config = require('./config');
 const {getAppUsedUserList} = require('./jobs/appUsages');
-const {getInterviewInfoListForNotification, addNotifiedUserIds} = require('./jobs/projects');
+const {getInterviewInfoListForNotification, addNotifiedUserIds, getClosedInterviews} = require('./jobs/projects');
 const {getUserNotificationTokenList} = require('./jobs/users');
 const {sendNotification} = require('./jobs/notification');
 const {insertUncrawledApps} = require('./jobs/uncrawledApps');
@@ -66,6 +66,7 @@ agenda.define('add interviewInfo with userIds to notification-interviews collect
     });
 });
 
+/** Start of 노티 전송 플로우 **/
 agenda.define('start to send notification', function (job, done) {
     console.log('[job] start to send notification');
 
@@ -110,9 +111,10 @@ agenda.define('send notification to users', function (job, done) {
     const notificationIdList = job.attrs.data.notificationIdList;
     const interviewInfo = job.attrs.data.interviewInfo;
 
-    sendNotification(notificationIdList, interviewInfo.projectId, interviewInfo.interviewSeq, interviewInfo.projectName, interviewInfo.projectIntroduce).then(response => {
-        console.log('sendNotification done');
-        agenda.now('remove notification-interviews collection', {interviewInfo: interviewInfo});
+    sendNotification(notificationIdList, interviewInfo).then(response => {
+        if (interviewInfo.notiType === '모집') {
+            agenda.now('remove notification-interviews collection', {interviewInfo: interviewInfo});
+        }
         done();
     }).catch(err => {
         console.log(err);
@@ -132,6 +134,7 @@ agenda.define('remove notification-interviews collection', function (job, done) 
         done(err);
     });
 });
+/** End of 노티 전송 플로우 **/
 
 agenda.define('insert uncrawled-apps from apps and app-usages', function (job, done) {
     console.log('[job] insert uncrawled-apps from apps and app-usages');
@@ -146,6 +149,26 @@ agenda.define('backup for shortTermStats', function (job, done) {
 
     backup(new Date().getTime() - 30 * 60 * 1000, '/Users/act/backup/short-term-stats-backup').then((result) => {
         console.log('backup for shortTermStats done');
+        done();
+    }).catch(err => {
+        console.log(err);
+        done(err);
+    });
+});
+
+// 확정된 인터뷰에 대한 노티 보내기 - DB 거치지 않음
+agenda.define('start to send notification for closed interviews', function(job, done) {
+    console.log('[job] start to send notification for closed interviews');
+
+    getClosedInterviews().then((closedInterviewInfos) => {
+        console.log('getClosedInterviews - Completed (' + closedInterviewInfos.length + ')');
+
+        closedInterviewInfos.forEach(interviewInfo => {
+            console.log('closedInterviewInfo seq=' + interviewInfo.interviewSeq);
+            agenda.now('get notification token list each user', { interviewInfo:  interviewInfo});
+        });
+
+        console.log('start to send notification for closed interviews done');
         done();
     }).catch(err => {
         console.log(err);
