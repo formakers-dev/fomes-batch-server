@@ -111,7 +111,7 @@ agenda.define('send notification to users', function (job, done) {
     const notificationIdList = job.attrs.data.notificationIdList;
     const interviewInfo = job.attrs.data.interviewInfo;
 
-    sendNotification(notificationIdList, interviewInfo).then(response => {
+    sendNotification(notificationIdList, interviewInfo).then(() => {
         if (interviewInfo.notiType === '모집') {
             agenda.now('remove notification-interviews collection', {interviewInfo: interviewInfo});
         }
@@ -147,7 +147,7 @@ agenda.define('insert uncrawled-apps from apps and app-usages', function (job, d
 agenda.define('backup for shortTermStats', function (job, done) {
     console.log('[job] backup for shortTermStats');
 
-    backup(new Date().getTime() - 30 * 60 * 1000, '/Users/act/backup/short-term-stats-backup').then((result) => {
+    backup(new Date().getTime() - 30 * 60 * 1000, '/Users/act/backup/short-term-stats-backup').then(() => {
         console.log('backup for shortTermStats done');
         done();
     }).catch(err => {
@@ -185,8 +185,8 @@ agenda.on('ready', function () {
         }
 
         // batch
-        agenda.processEvery('12 14 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        agenda.processEvery('15 12 * * *', 'start to send notification');
+        agenda.processEvery('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
+        agenda.processEvery('30 11 * * *', 'start to send notification');
 
         // test
         // agenda.every('30 seconds', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
