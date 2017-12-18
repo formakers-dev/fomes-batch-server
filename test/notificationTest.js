@@ -70,11 +70,11 @@ describe('Notification test', () => {
             requestData.registration_ids[0].should.be.eql('token1');
             requestData.registration_ids[1].should.be.eql('token2');
             requestData.registration_ids[2].should.be.eql('token3');
-            requestData.notification.title.should.be.eql('[툰스토리] 문장을 쓰면 툰으로 변경해주는 인공지능 서비스');
+            requestData.notification.title.should.be.eql('[툰스토리] 유저인터뷰 확정');
             requestData.notification.body.should.be.eql('신청하신 유저 인터뷰가 확정되었습니다! 확정된 인터뷰 정보를 다시 확인해주세요.\n' +
                 '- 장소 : 서울대\n' +
                 '- 날짜 : 2017.11.5 (일)\n' +
-                '* 자세한 내용은 AppBee 앱의 \'다가오는 유저 인터뷰\'메뉴에서 확인해주세요.');
+                '* 자세한 내용은 AppBee 앱의 \"다가오는 유저 인터뷰\"메뉴에서 확인해주세요.');
             requestData.data['EXTRA_PROJECT_ID'].should.be.eql('testProjectId');
             requestData.data['EXTRA_INTERVIEW_SEQ'].should.be.eql(1);
             done();
