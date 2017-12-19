@@ -6,6 +6,7 @@ const notificationInterviewsSchema = new Schema({
     interviewSeq: Number,
     projectName: String,
     projectIntroduce: String,
+    notiType: String,
     userIds: Array
 });
 

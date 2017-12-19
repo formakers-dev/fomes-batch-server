@@ -112,9 +112,7 @@ agenda.define('send notification to users', function (job, done) {
     const interviewInfo = job.attrs.data.interviewInfo;
 
     sendNotification(notificationIdList, interviewInfo).then(() => {
-        if (interviewInfo.notiType === '모집') {
-            agenda.now('remove notification-interviews collection', {interviewInfo: interviewInfo});
-        }
+        agenda.now('remove notification-interviews collection', {interviewInfo: interviewInfo});
         done();
     }).catch(err => {
         console.log(err);

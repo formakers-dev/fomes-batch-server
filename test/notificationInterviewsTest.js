@@ -13,12 +13,14 @@ describe('NotificationInterviews test', () => {
                 interviewSeq: 1,
                 projectName: '툰스토리',
                 projectIntroduce: '문장을 쓰면 툰으로 변경해주는 인공지능 서비스',
+                notiType: '모집',
                 userIds: ['userId1','userId2','userId3']
             },
             {
                 projectId: 1000001,
                 interviewSeq: 2,
                 projectName: '리얼포토',
+                notiType: '모집',
                 projectIntroduce: '사진을 찍으면 툰으로 변경해주는 인공지능 서비스',
                 userIds: ['userId4','userId5']
             }
@@ -37,10 +39,12 @@ describe('NotificationInterviews test', () => {
             sortedUserIdArray.length.should.be.eql(2);
             sortedUserIdArray[0].projectId.should.be.eql(1000001);
             sortedUserIdArray[0].interviewSeq.should.be.eql(1);
+            sortedUserIdArray[0].notiType.should.be.eql('모집');
             sortedUserIdArray[0].userIds.should.be.eql(['userId1','userId2','userId3']);
 
             sortedUserIdArray[1].projectId.should.be.eql(1000001);
             sortedUserIdArray[1].interviewSeq.should.be.eql(2);
+            sortedUserIdArray[1].notiType.should.be.eql('모집');
             sortedUserIdArray[1].userIds.should.be.eql(['userId4','userId5']);
 
             done();
@@ -53,6 +57,7 @@ describe('NotificationInterviews test', () => {
             interviewSeq: 3,
             projectName: '앱비',
             projectIntroduce: '깁미더 리워드',
+            notiType: '모집',
             userIds: ['userId21','userId22','userId23','userId24']
         };
 
@@ -63,6 +68,7 @@ describe('NotificationInterviews test', () => {
                 interviewArray[2].interviewSeq.should.be.eql(3);
                 interviewArray[2].projectName.should.be.eql('앱비');
                 interviewArray[2].projectIntroduce.should.be.eql('깁미더 리워드');
+                interviewArray[2].notiType.should.be.eql('모집');
                 interviewArray[2].userIds.length.should.be.eql(4);
                 interviewArray[2].userIds.should.be.eql(['userId21','userId22','userId23','userId24']);
                 done();
@@ -71,7 +77,7 @@ describe('NotificationInterviews test', () => {
     });
 
     it('removeNotificationInterviews 호출 시 입력한 유저 목록을 삭제한다', (done) => {
-        removeNotificationInterview({projectId: 1000001, interviewSeq: 2}).then(() => {
+        removeNotificationInterview({projectId: 1000001, interviewSeq: 2, notiType: '모집'}).then(() => {
             NotificationInterviews.find({}).exec().then((interviewArray) => {
                 interviewArray.length.should.be.eql(1);
                 interviewArray[0].projectId.should.be.eql(1000001);
