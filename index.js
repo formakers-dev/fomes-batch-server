@@ -6,7 +6,7 @@ const {getUserNotificationTokenList} = require('./jobs/users');
 const {sendNotification} = require('./jobs/notification');
 const {insertUncrawledApps} = require('./jobs/uncrawledApps');
 const {addNotificationInterview, getAllNotificationInterviews, removeNotificationInterview} = require('./jobs/notificationInterviews');
-const {backup} = require('./jobs/shortTermStats');
+const {backup} = require('./jobs/backupShortTermStats');
 
 require('./db').init();
 
@@ -144,14 +144,7 @@ agenda.define('insert uncrawled-apps from apps and app-usages', function (job, d
 
 agenda.define('backup for shortTermStats', function (job, done) {
     console.log('[job] backup for shortTermStats');
-
-    backup(new Date().getTime() - 30 * 60 * 1000, '/Users/act/backup/short-term-stats-backup').then(() => {
-        console.log('backup for shortTermStats done');
-        done();
-    }).catch(err => {
-        console.log(err);
-        done(err);
-    });
+    backup();
 });
 
 // 확정된 인터뷰에 대한 노티 보내기 - DB 거치지 않음
@@ -183,14 +176,16 @@ agenda.on('ready', function () {
         }
 
         // batch
-        agenda.processEvery('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        agenda.processEvery('30 11 * * *', 'start to send notification');
+        // agenda.processEvery('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
+        // agenda.processEvery('30 11 * * *', 'start to send notification');
 
         // test
         // agenda.every('30 seconds', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
         // agenda.every('30 seconds', 'start to send notification');
         // agenda.now('insert uncrawled-apps from apps and app-usages');
         // agenda.now('backup for shortTermStats');
+
+        agenda.now('backup for shortTermStats');
 
         agenda.start();
     });

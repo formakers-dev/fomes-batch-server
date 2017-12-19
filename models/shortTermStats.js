@@ -7,4 +7,5 @@ const shortTermStatsSchema = new mongoose.Schema({
     totalUsedTime: Number
 });
 const shortTermStatsList = mongoose.model('short-term-stats', shortTermStatsSchema);
-module.exports = shortTermStatsList;
+const backupShortTermStatsList = mongoose.model('backup-short-term-stats', shortTermStatsSchema);
+module.exports = { backupShortTermStatsList, shortTermStatsList };
