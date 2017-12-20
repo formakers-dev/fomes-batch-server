@@ -178,8 +178,8 @@ agenda.on('ready', function () {
         }
 
         // batch
-        // agenda.processEvery('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        // agenda.processEvery('30 11 * * *', 'start to send notification');
+        agenda.processEvery('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
+        agenda.processEvery('30 11 * * *', 'start to send notification');
 
         // test
         // agenda.every('30 seconds', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
@@ -187,7 +187,7 @@ agenda.on('ready', function () {
         // agenda.now('insert uncrawled-apps from apps and app-usages');
         // agenda.now('backup for shortTermStats');
 
-        agenda.now('backup for shortTermStats');
+        // agenda.now('backup for shortTermStats');
 
         agenda.start();
     });
