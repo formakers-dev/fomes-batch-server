@@ -208,7 +208,7 @@ describe('Projects test', () => {
                 result[0].apps[0].should.be.eql('com.nhn.android.search');
                 result[0].apps[1].should.be.eql('com.kakao.talk');
                 result[0].should.not.hasOwnProperty('notifiedUserIds');
-                result[0].notiType.should.be.eql('모집');
+                result[0].notificationType.should.be.eql('모집');
 
                 result[1].projectId.should.be.eql(100000042);
                 result[1].interviewSeq.should.be.eql(2);
@@ -219,7 +219,7 @@ describe('Projects test', () => {
                 result[1].apps[0].should.be.eql('com.nhn.appbee.search');
                 result[1].apps[1].should.be.eql('com.kakao.talk');
                 result[1].should.not.hasOwnProperty('notifiedUserIds');
-                result[1].notiType.should.be.eql('모집');
+                result[1].notificationType.should.be.eql('모집');
 
                 result[2].projectId.should.be.eql(100000043);
                 result[2].interviewSeq.should.be.eql(2);
@@ -232,7 +232,7 @@ describe('Projects test', () => {
                 result[2].notifiedUserIds.length.should.be.eql(2);
                 result[2].notifiedUserIds[0].should.be.eql('userId1');
                 result[2].notifiedUserIds[1].should.be.eql('userId2');
-                result[2].notiType.should.be.eql('모집');
+                result[2].notificationType.should.be.eql('모집');
 
                 done();
             }).catch(err => done(err));
@@ -289,7 +289,7 @@ describe('Projects test', () => {
                 result[0].apps.length.should.be.eql(2);
                 result[0].apps[0].should.be.eql("com.nhn.appbee.search");
                 result[0].apps[1].should.be.eql("com.kakao.talk");
-                result[0].notiType.should.be.eql('확정');
+                result[0].notificationType.should.be.eql('확정');
 
                 result[0].assignedTimeSlot = result[0].assignedTimeSlot.sort((item1, item2) => {
                     return parseInt(item1.time.replace('time', '')) > parseInt(item2.time.replace('time', ''));

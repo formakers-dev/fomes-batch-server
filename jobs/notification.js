@@ -7,7 +7,7 @@ const sendNotification = (notificationIdList, interviewInfo) => {
     const interviewSeq = interviewInfo.interviewSeq;
     const projectName = interviewInfo.projectName;
     const projectIntroduce = interviewInfo.projectIntroduce;
-    const notiType = interviewInfo.notiType || '모집';
+    const notificationType = interviewInfo.notificationType || '모집';
 
     if (!notificationIdList || notificationIdList.length <= 0) {
         return;
@@ -17,10 +17,10 @@ const sendNotification = (notificationIdList, interviewInfo) => {
     let title = '';
     let body = '';
 
-    if (notiType === '모집') {
+    if (notificationType === '모집') {
         title = '[' + projectName + '] ' + projectIntroduce;
         body = '당신을 위한 유저 인터뷰를 확인해 보세요.';
-    } else if (notiType === '확정') {
+    } else if (notificationType === '확정') {
         title = '[' + projectName + '] 유저인터뷰 확정';
 
         let date = interviewInfo.interviewDate;
@@ -31,7 +31,7 @@ const sendNotification = (notificationIdList, interviewInfo) => {
             '* 자세한 내용은 AppBee 앱의 \"다가오는 유저 인터뷰\"메뉴에서 확인해주세요.';
     } else {
         return new Promise((resolve, reject) => {
-            reject(new Error("Invalid notiType!!!"));
+            reject(new Error("Invalid notificationType!!!"));
         });
     }
 
@@ -45,7 +45,8 @@ const sendNotification = (notificationIdList, interviewInfo) => {
         'registration_ids': notificationIdList,
         'data' : {
             'EXTRA_PROJECT_ID' : projectId,
-            'EXTRA_INTERVIEW_SEQ': interviewSeq
+            'EXTRA_INTERVIEW_SEQ': interviewSeq,
+            'EXTRA_NOTIFICATION_TYPE': notificationType
         }
     });
 

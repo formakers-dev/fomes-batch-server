@@ -22,7 +22,7 @@ describe('Notification test', () => {
             interviewSeq: 1,
             projectName: '툰스토리',
             projectIntroduce: '문장을 쓰면 툰으로 변경해주는 인공지능 서비스',
-            notiType: '모집',
+            notificationType: '모집',
         };
 
         sendNotification(notificationIdList, interviewInfo)
@@ -55,7 +55,7 @@ describe('Notification test', () => {
             interviewSeq: 1,
             projectName: '툰스토리',
             projectIntroduce: '문장을 쓰면 툰으로 변경해주는 인공지능 서비스',
-            notiType: '확정',
+            notificationType: '확정',
             interviewLocation: '서울대',
             interviewDate: new Date("2017-11-05T14:59:59.999Z"),
         };

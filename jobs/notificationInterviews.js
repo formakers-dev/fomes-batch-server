@@ -11,12 +11,12 @@ const addNotificationInterview = (interviewInfo) => {
         projectName: interviewInfo.projectName,
         projectIntroduce: interviewInfo.projectIntroduce,
         userIds: interviewInfo.userIds,
-        notiType: interviewInfo.notiType
+        notificationType: interviewInfo.notificationType
     });
 };
 
 const removeNotificationInterview = (interviewInfo) => {
-    return NotificationInterviews.remove({projectId: interviewInfo.projectId, interviewSeq: interviewInfo.interviewSeq, notiType: interviewInfo.notiType});
+    return NotificationInterviews.remove({projectId: interviewInfo.projectId, interviewSeq: interviewInfo.interviewSeq, notificationType: interviewInfo.notificationType});
 };
 
 module.exports = {getAllNotificationInterviews, addNotificationInterview, removeNotificationInterview};

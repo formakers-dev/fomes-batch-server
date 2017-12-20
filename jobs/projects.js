@@ -26,7 +26,7 @@ const getInterviewInfoListForNotification = () => {
                 'totalCount': '$interviews.totalCount',
                 'apps': '$interviews.apps',
                 'notifiedUserIds': '$interviews.notifiedUserIds',
-                'notiType' : '모집',
+                'notificationType' : '모집',
             }
         },
     ]).exec();
@@ -67,7 +67,7 @@ const getClosedInterviews = () => {
                 'interviewTimeSlot': '$interviews.timeSlot',
                 'totalCount': '$interviews.totalCount',
                 'apps': '$interviews.apps',
-                'notiType': '확정',
+                'notificationType': '확정',
             }
         },
     ]).exec().then(projects => {
