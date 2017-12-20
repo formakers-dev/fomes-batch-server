@@ -1,44 +1,50 @@
 const shell = require('shelljs');
 const config = require('../config');
 
-const backup = () => {
-    // 1. rename from short-term-stats to backup-short-term-stats
+const backup = (path) => {
+    renameCommnad();
+    downloadCommand(path);
+    dropCommand();
+    console.log('============ backup done ============');
+};
+
+const renameCommnad = () => {
     console.log('================ 1. rename from short-term-stats to backup-short-term-stats');
-    const renameCommand = shell.exec('mongo --host=' + config.backup.host + ' --port=' + config.backup.port +
+    const command = shell.exec('mongo --host=' + config.backup.host + ' --port=' + config.backup.port +
         ' -u ' + config.backup.username + ' -p ' + config.backup.password + ' --authenticationDatabase admin' +
         ' --eval "db.getCollection(\'short-term-stats\').renameCollection(\'backup-short-term-stats\')"' +
         ' --ssl --sslAllowInvalidCertificates ' + config.backup.dbName);
-    checkCommand(renameCommand);
-    const renameResponse = JSON.parse("{" + renameCommand.stdout.split('\n{')[1]);
+    checkCommand(command);
+    const renameResponse = JSON.parse("{" + command.stdout.split('\n{')[1]);
     if (renameResponse.ok === 0) {
         console.error("[error] " + renameResponse.errmsg + ", code=" + renameResponse.code + ", codeName=" + renameResponse.codeName);
         return;
     }
+};
 
-    // 2. backup-short-term-stats mongoexport
+const downloadCommand = (path) => {
     console.log('================ 2. mongoexport');
-    const date = new Date().toISOString();
-    const path = config.backup.outputPath + 'backup-short-term-stats-'+date+'.json';
-    const exportCommand = shell.exec('mongoexport --host=' + config.backup.host + ' --port=' + config.backup.port +
+    const command = shell.exec('mongoexport --host=' + config.backup.host + ' --port=' + config.backup.port +
         ' -u ' + config.backup.username + ' -p ' + config.backup.password + ' --authenticationDatabase admin' +
         ' --ssl --sslAllowInvalidCertificates --db=' + config.backup.dbName +
         ' --collection=backup-short-term-stats --type=json --out=' + path);
-    checkCommand(exportCommand);
+    checkCommand(command);
 
-    // 3. backup-short-term-stats drop
+};
+
+const dropCommand = () => {
     console.log('================ 3. drop backup-short-term-stats');
-    const dropCommand = shell.exec('mongo --host=' + config.backup.host + ' --port=' + config.backup.port +
+    const command = shell.exec('mongo --host=' + config.backup.host + ' --port=' + config.backup.port +
         ' -u ' + config.backup.username + ' -p ' + config.backup.password + ' --authenticationDatabase admin' +
         ' --eval "db.getCollection(\'backup-short-term-stats\').drop()"' +
         ' --ssl --sslAllowInvalidCertificates ' + config.backup.dbName);
 
-    checkCommand(dropCommand);
-    const dropResponse = JSON.parse(dropCommand.stdout.split('\n')[3]);
+    checkCommand(command);
+    const dropResponse = JSON.parse(command.stdout.split('\n')[3]);
     if (dropResponse !== true) {
         console.log('[error] backup-short-term-stats이 없거나 삭제에 실패했습니다.');
         return;
     }
-    console.log('=================================================');
 };
 
 const checkCommand = (command) => {
@@ -49,4 +55,4 @@ const checkCommand = (command) => {
     }
 };
 
-module.exports = {backup};
+module.exports = {backup, renameCommnad, downloadCommand, dropCommand};
