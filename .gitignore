@@ -3,3 +3,4 @@ node_modules/
 com
 *.log
 .DS_Store
+setupRelease.sh

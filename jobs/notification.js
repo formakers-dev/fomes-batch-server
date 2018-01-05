@@ -25,7 +25,7 @@ const sendNotification = (notificationIdList, interviewInfo) => {
 
         let date = interviewInfo.interviewDate;
 
-        body = '신청하신 유저 인터뷰가 확정되었습니다! 확정된 인터뷰 정보를 다시 확인해주세요.\n' +
+        body = '신청하신 유저 인터뷰가 확정되었습니다!\n확정된 인터뷰 정보를 다시 확인해주세요.\n' +
             '- 장소 : ' + interviewInfo.interviewLocation + '\n' +
             '- 날짜 : ' + date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate() + ' (' + getDayString(date.getDay()) + ')\n' +
             '* 자세한 내용은 AppBee 앱의 \"다가오는 유저 인터뷰\"메뉴에서 확인해주세요.';
