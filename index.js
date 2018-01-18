@@ -1,7 +1,7 @@
 const Agenda = require('agenda');
 const config = require('./config');
 const {getAppUsedUserList} = require('./jobs/appUsages');
-const {getInterviewInfoListForNotification, addNotifiedUserIds, getClosedInterviews} = require('./jobs/projects');
+const {getInterviewInfo, getInterviewInfoListForNotification, addNotifiedUserIds, getClosedInterviews} = require('./jobs/projects');
 const {getUserNotificationTokenList} = require('./jobs/users');
 const {sendNotification} = require('./jobs/notification');
 const {insertUncrawledApps} = require('./jobs/uncrawledApps');
@@ -132,22 +132,6 @@ agenda.define('remove notification-interviews collection', function (job, done) 
         done(err);
     });
 });
-/** End of 노티 전송 플로우 **/
-
-agenda.define('insert uncrawled-apps from apps and app-usages', function (job, done) {
-    console.log('[job] insert uncrawled-apps from apps and app-usages');
-    insertUncrawledApps().then(() => {
-        console.log('insert uncrawled-apps from apps and app-usages done');
-        done();
-    })
-});
-
-agenda.define('backup for shortTermStats', function (job, done) {
-    console.log('[job] backup for shortTermStats');
-    const date = new Date().toISOString();
-    const path = config.backup.outputPath + 'backup-short-term-stats-'+date+'.json';
-    backup(path);
-});
 
 // 확정된 인터뷰에 대한 노티 보내기 - DB 거치지 않음
 agenda.define('start to send notification for closed interviews', function(job, done) {
@@ -169,6 +153,44 @@ agenda.define('start to send notification for closed interviews', function(job, 
     });
 });
 
+// [임시] 취소된 인터뷰에 대한 노티 보내기
+agenda.define('start to send notification for canceled interviews', function(job, done) {
+    console.log('[job] start to send notification for canceled interviews');
+
+    // TODO : 매뉴얼로 작성하기
+    const projectId = 1234;  // NUMBER
+    const interviewSeq = 1;       // NUMBER
+
+    getInterviewInfo(projectId, interviewSeq)
+        .then(interviewInfo => {
+            console.log(interviewInfo);
+
+            interviewInfo.notificationType = '취소';
+
+            agenda.now('get notification token list each user', {interviewInfo: interviewInfo});
+            done();
+        });
+});
+
+/** End of 노티 전송 플로우 **/
+
+// 크롤링
+agenda.define('insert uncrawled-apps from apps and app-usages', function (job, done) {
+    console.log('[job] insert uncrawled-apps from apps and app-usages');
+    insertUncrawledApps().then(() => {
+        console.log('insert uncrawled-apps from apps and app-usages done');
+        done();
+    })
+});
+
+// 단기데이터 백업
+agenda.define('backup for shortTermStats', function (job) {
+    console.log('[job] backup for shortTermStats');
+    const date = new Date().toISOString();
+    const path = config.backup.outputPath + 'backup-short-term-stats-'+date+'.json';
+    backup(path);
+});
+
 agenda.on('ready', function () {
     console.log('agenda start!');
 
@@ -178,17 +200,26 @@ agenda.on('ready', function () {
         }
 
         // batch
-        agenda.processEvery('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        agenda.processEvery('30 11 * * *', 'start to send notification');
+        // agenda.processEvery('30 3 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
+        // agenda.processEvery('30 11 * * *', 'start to send notification');
 
         // test
         // agenda.every('30 seconds', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        // agenda.every('30 seconds', 'start to send notification');
+
+        // 일회성 푸쉬
+        // agenda.now('get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
+        // agenda.now('start to send notification');
+
+        // 크롤링
         // agenda.now('insert uncrawled-apps from apps and app-usages');
+
+        // 단기 데이터 백업
         // agenda.now('backup for shortTermStats');
 
         // agenda.now('backup for shortTermStats');
 
+
+        //agenda.now('start to send notification for canceled interviews');
         agenda.start();
     });
 });

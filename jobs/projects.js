@@ -1,5 +1,40 @@
 const Projects = require('../models/projects');
 
+const getInterviewInfo = (projectId, interviewSeq) => {
+    return Projects.aggregate([
+        {
+            $match: {'projectId': projectId}
+        },
+        {
+            $unwind: {path: '$interviews'}
+        },
+        {
+            $match : {'interviews.seq': interviewSeq}
+        },
+        {
+            $project: {
+                'projectId': true,
+                'interviewSeq': '$interviews.seq',
+                'projectName': '$name',
+                'userIds' : '$interviews.timeSlot'
+            }
+        }
+    ])
+    .then((result) => {
+        result = result[0];
+        const userIds = [];
+        for(let i in result.userIds) {
+            if (result.userIds.hasOwnProperty(i)) {
+                userIds.push(result.userIds[i]);
+            }
+        }
+        result.userIds = userIds;
+        return new Promise((resolve) => {
+            resolve(result);
+        });
+    })
+};
+
 const getInterviewInfoListForNotification = () => {
     //TODO : 글로벌 확산 시 로케일 고려되어야 함. 현재는 배치서버 로케일 기준따라감
     const currentDate = new Date();
@@ -89,4 +124,4 @@ const getClosedInterviews = () => {
     });
 };
 
-module.exports = {getInterviewInfoListForNotification, addNotifiedUserIds, getClosedInterviews};
+module.exports = {getInterviewInfoListForNotification, addNotifiedUserIds, getClosedInterviews, getInterviewInfo};

@@ -29,6 +29,9 @@ const sendNotification = (notificationIdList, interviewInfo) => {
             '- 장소 : ' + interviewInfo.interviewLocation + '\n' +
             '- 날짜 : ' + date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate() + ' (' + getDayString(date.getDay()) + ')\n' +
             '* 자세한 내용은 AppBee 앱의 \"다가오는 유저 인터뷰\"메뉴에서 확인해주세요.';
+    } else if (notificationType === '취소') {
+        title = '인터뷰 취소안내';
+        body = '의뢰자의 요청으로 \'' + projectName + '\'의 인터뷰 모집이 취소되었습니다.\n참여 감사드리며 추후 모집을 기다려주세요.';
     } else {
         return new Promise((resolve, reject) => {
             reject(new Error("Invalid notificationType!!!"));
