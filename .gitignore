@@ -4,3 +4,4 @@ com
 *.log
 .DS_Store
 setupRelease.sh
+setupDevelopment.sh

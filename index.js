@@ -177,7 +177,7 @@ agenda.define('start to send notification for canceled interviews', function(job
 // 크롤링
 agenda.define('insert uncrawled-apps from apps and app-usages', function (job, done) {
     console.log('[job] insert uncrawled-apps from apps and app-usages');
-    insertUncrawledApps().then(() => {
+    insertUncrawledApps().then((result) => {
         console.log('insert uncrawled-apps from apps and app-usages done');
         done();
     })
@@ -211,11 +211,9 @@ agenda.on('ready', function () {
         // agenda.now('start to send notification');
 
         // 크롤링
-        // agenda.now('insert uncrawled-apps from apps and app-usages');
+        agenda.now('insert uncrawled-apps from apps and app-usages');
 
         // 단기 데이터 백업
-        // agenda.now('backup for shortTermStats');
-
         // agenda.now('backup for shortTermStats');
 
 
