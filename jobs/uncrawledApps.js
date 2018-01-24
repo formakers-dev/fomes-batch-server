@@ -3,22 +3,18 @@ const Apps = require('../models/apps');
 const UncrawledApps = require('../models/uncrawledApps');
 
 const insertUncrawledApps = () => {
+    return UncrawledApps.distinct('packageName')
+        .then(registeredUncrawledApps => Apps.distinct('packageName', {packageName: {$nin: registeredUncrawledApps}}))
+        .then(apps => AppUsages.distinct('packageName', {packageName: {$nin: apps}}))
+        .then(uncrawledPackageNames => {
+            const uncrawledApps = uncrawledPackageNames.map(app => {
+                return {
+                    packageName: app
+                }
+            });
 
-    // appUsage에 있는 packageName중 apps에 없는 것 추출
-    // list에 있는 packageName중 uncawledApps에 없는 것 추출
-    // insert
-    return Apps.distinct('packageName').then((apps) => {
-        return AppUsages.distinct('packageName', {packageName: {$nin: apps}});
-    }).then(uncrawledApps => {
-        return uncrawledApps.forEach(data => {
-            UncrawledApps.findOneAndUpdate(
-                {
-                    'packageName': data
-                },
-                {$set: {'packageName': data}},
-                {upsert: true}).exec()
+            return UncrawledApps.insertMany(uncrawledApps);
         });
-    })
 };
 
 module.exports = {insertUncrawledApps};

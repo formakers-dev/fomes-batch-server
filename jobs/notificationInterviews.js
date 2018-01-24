@@ -1,7 +1,7 @@
 const NotificationInterviews = require('../models/notificationInterviews');
 
-const getAllNotificationInterviews = () => {
-    return NotificationInterviews.find({}).exec();
+const getNotificationInterviews = (notificationType) => {
+    return NotificationInterviews.find({notificationType: notificationType}).exec();
 };
 
 const addNotificationInterview = (interviewInfo) => {
@@ -19,4 +19,4 @@ const removeNotificationInterview = (interviewInfo) => {
     return NotificationInterviews.remove({projectId: interviewInfo.projectId, interviewSeq: interviewInfo.interviewSeq, notificationType: interviewInfo.notificationType});
 };
 
-module.exports = {getAllNotificationInterviews, addNotificationInterview, removeNotificationInterview};
+module.exports = {getNotificationInterviews, addNotificationInterview, removeNotificationInterview};

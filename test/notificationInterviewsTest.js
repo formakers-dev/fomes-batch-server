@@ -1,7 +1,7 @@
 const chai = require('chai');
 const should = chai.should();
 const NotificationInterviews = require('./../models/notificationInterviews');
-const {getAllNotificationInterviews, addNotificationInterview, removeNotificationInterview} = require('./../jobs/notificationInterviews');
+const {addNotificationInterview, removeNotificationInterview} = require('./../jobs/notificationInterviews');
 
 require('../db').init();
 
@@ -27,28 +27,6 @@ describe('NotificationInterviews test', () => {
         ];
 
         NotificationInterviews.create(initialData, done);
-    });
-
-    it('getAllNotificationInterviews 호출 시 테이블에 저장된 모든 유저 목록을 리턴한다', (done) => {
-        getAllNotificationInterviews().then(userIdArray => {
-
-            const sortedUserIdArray = userIdArray.sort((a, b) => {
-                return a.userIds[0].localeCompare(b.userIds[0]);
-            });
-
-            sortedUserIdArray.length.should.be.eql(2);
-            sortedUserIdArray[0].projectId.should.be.eql(1000001);
-            sortedUserIdArray[0].interviewSeq.should.be.eql(1);
-            sortedUserIdArray[0].notificationType.should.be.eql('모집');
-            sortedUserIdArray[0].userIds.should.be.eql(['userId1','userId2','userId3']);
-
-            sortedUserIdArray[1].projectId.should.be.eql(1000001);
-            sortedUserIdArray[1].interviewSeq.should.be.eql(2);
-            sortedUserIdArray[1].notificationType.should.be.eql('모집');
-            sortedUserIdArray[1].userIds.should.be.eql(['userId4','userId5']);
-
-            done();
-        }).catch(err => done(err));
     });
 
     it('addNotificationInterview 호출 시 입력한 인터뷰 목록을 저장한다', (done) => {

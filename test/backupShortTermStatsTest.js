@@ -33,7 +33,9 @@ describe('ShortTermStats test', () => {
 
     describe('sbort-term-stats를 backup-short-term-stats로 rename 한다.', () => {
         before(done => {
-            ShortTermStats.create(data, done);
+            ShortTermStats.remove({}, () => {
+                ShortTermStats.create(data, done);
+            });
         });
         it('backup 호출시, short-term-stats를 backup-short-term-stats 으로 리네임한다.', (done) => {
             // short-term-stat
