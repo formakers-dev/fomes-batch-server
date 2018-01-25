@@ -209,8 +209,6 @@ agenda.on('ready', function () {
             jobs.forEach(job => job.remove());
         }
 
-        // UTC 0 기준으로 된 시간을 적어 주어야 함, 더불어 jobs컬렉션에 들어가는 noti시간 또한 UTC 0 기준으로 넣어주어야 함
-
         // 백업 batch: 4:00
         agenda.every('0 4 * * *', 'backup for shortTermStats');
         // 노티 대상자 추출 batch: 1:00
