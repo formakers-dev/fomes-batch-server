@@ -212,11 +212,11 @@ agenda.on('ready', function () {
         // UTC 0 기준으로 된 시간을 적어 주어야 함, 더불어 jobs컬렉션에 들어가는 noti시간 또한 UTC 0 기준으로 넣어주어야 함
 
         // 백업 batch: 4:00
-        agenda.every('0 20 * * *', 'backup for shortTermStats');
+        agenda.every('0 4 * * *', 'backup for shortTermStats');
         // 노티 대상자 추출 batch: 1:00
-        agenda.every('0 16 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
+        agenda.every('0 1 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
         // 언크롤드앱 추출 batch: 2:30
-        agenda.every('30 17 * * *', 'insert uncrawled-apps from apps and app-usages');
+        agenda.every('30 2 * * *', 'insert uncrawled-apps from apps and app-usages');
         // 노티 batch: 매 00분 30분
         agenda.every('*/30 * * * *', 'observe notification');
 
