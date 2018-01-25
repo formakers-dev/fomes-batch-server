@@ -3,7 +3,7 @@ const should = chai.should();
 const fs = require('fs');
 const ShortTermStats = require('./../models/shortTermStats').shortTermStatsList;
 const BackupShortTermStats = require('./../models/shortTermStats').backupShortTermStatsList;
-const {renameCommnad, downloadCommand, dropCommand} = require('../jobs/backupShortTermStats');
+const {renameCommand, downloadCommand, dropCommand} = require('../jobs/backupShortTermStats');
 const mongoose = require('mongoose');
 
 require('../db').init();
@@ -39,7 +39,7 @@ describe('ShortTermStats test', () => {
         });
         it('backup 호출시, short-term-stats를 backup-short-term-stats 으로 리네임한다.', (done) => {
             // short-term-stat
-            renameCommnad();
+            renameCommand();
             mongoose.connection.db.listCollections({name: 'backup-short-term-stats'})
                 .next(function(err, collectionInfo) {
                     should.exist(collectionInfo);

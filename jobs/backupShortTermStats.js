@@ -2,13 +2,14 @@ const shell = require('shelljs');
 const config = require('../config');
 
 const backup = (path) => {
-    renameCommnad();
+    renameCommand();
     downloadCommand(path);
     dropCommand();
+    moveToAwsS3(path);
     console.log('============ backup done ============');
 };
 
-const renameCommnad = () => {
+const renameCommand = () => {
     console.log('================ 1. rename from short-term-stats to backup-short-term-stats');
     const command = shell.exec('mongo --host=' + config.backup.host + ' --port=' + config.backup.port +
         ' -u ' + config.backup.username + ' -p ' + config.backup.password + ' --authenticationDatabase admin' +
@@ -18,7 +19,6 @@ const renameCommnad = () => {
     const renameResponse = JSON.parse("{" + command.stdout.split('\n{')[1]);
     if (renameResponse.ok === 0) {
         console.error("[error] " + renameResponse.errmsg + ", code=" + renameResponse.code + ", codeName=" + renameResponse.codeName);
-        return;
     }
 };
 
@@ -43,7 +43,6 @@ const dropCommand = () => {
     const dropResponse = JSON.parse(command.stdout.split('\n')[3]);
     if (dropResponse !== true) {
         console.log('[error] backup-short-term-stats이 없거나 삭제에 실패했습니다.');
-        return;
     }
 };
 
@@ -51,8 +50,12 @@ const checkCommand = (command) => {
     if(command.code !== 0) {
         console.error(command.stderr);
         shell.exit(1);
-        return;
     }
 };
 
-module.exports = {backup, renameCommnad, downloadCommand, dropCommand};
+const moveToAwsS3 = (path) => {
+    console.log('================ 4. move to aws s3');
+    shell.exec('aws s3 mv ' + path + ' s3://short-term-stats');
+};
+
+module.exports = {backup, renameCommand, downloadCommand, dropCommand};
