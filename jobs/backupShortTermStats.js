@@ -1,11 +1,11 @@
 const shell = require('shelljs');
 const config = require('../config');
 
-const backup = (path) => {
+const backup = (downloadFilePath) => {
     renameCommand();
-    downloadCommand(path);
+    downloadCommand(downloadFilePath);
     dropCommand();
-    moveToAwsS3(path);
+    moveToAwsS3(downloadFilePath);
     console.log('============ backup done ============');
 };
 
@@ -22,12 +22,12 @@ const renameCommand = () => {
     }
 };
 
-const downloadCommand = (path) => {
+const downloadCommand = (downloadFilePath) => {
     console.log('================ 2. mongoexport');
     const command = shell.exec('mongoexport --host=' + config.backup.host + ' --port=' + config.backup.port +
         ' -u ' + config.backup.username + ' -p ' + config.backup.password + ' --authenticationDatabase admin' +
         ' --ssl --sslAllowInvalidCertificates --db=' + config.backup.dbName +
-        ' --collection=backup-short-term-stats --type=json --out=' + path);
+        ' --collection=backup-short-term-stats --type=json --out=' + downloadFilePath);
     checkCommand(command);
 
 };
@@ -53,9 +53,12 @@ const checkCommand = (command) => {
     }
 };
 
-const moveToAwsS3 = (path) => {
-    console.log('================ 4. move to aws s3');
-    shell.exec('aws s3 mv ' + path + ' s3://short-term-stats');
+const moveToAwsS3 = (downloadFilePath) => {
+    console.log('================ 4. compress and move to aws s3');
+    const gzFilePath = downloadFilePath + '.tar.gz';
+    shell.exec('tar -czvf ' + gzFilePath + ' ' + downloadFilePath);
+    shell.exec('aws s3 mv ' + gzFilePath + ' s3://short-term-stats');
+    shell.exec('rm ' + downloadFilePath);
 };
 
 module.exports = {backup, renameCommand, downloadCommand, dropCommand};
