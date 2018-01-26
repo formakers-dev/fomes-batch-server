@@ -61,12 +61,7 @@ const moveToAwsS3 = (downloadFilePath) => {
 
     if(commandCompress.code === 0) {
         console.log('================ 4.2 move to aws s3');
-        const commandAws = shell.exec('aws s3 mv ' + gzFilePath + ' s3://short-term-stats');
-
-        if(commandAws.code === 0) {
-            console.log('================ 4.3 remove the downloaded file');
-            shell.exec('rm ' + downloadFilePath);
-        }
+        shell.exec('aws s3 mv ' + gzFilePath + ' s3://short-term-stats');
     }
 };
 
