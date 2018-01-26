@@ -56,8 +56,8 @@ const checkCommand = (command) => {
 const moveToAwsS3 = (downloadFilePath) => {
     console.log('================ 4. compress and move to aws s3');
     console.log('================ 4.1 compress');
-    const gzFilePath = downloadFilePath + '.tar.gz';
-    const commandCompress = shell.exec('tar -czvf ' + gzFilePath + ' ' + downloadFilePath);
+    const gzFilePath = downloadFilePath + '.gz';
+    const commandCompress = shell.exec('gzip ' + downloadFilePath);
 
     if(commandCompress.code === 0) {
         console.log('================ 4.2 move to aws s3');
