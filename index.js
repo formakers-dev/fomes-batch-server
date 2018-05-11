@@ -4,7 +4,7 @@ const {getAppUsedUserList} = require('./jobs/appUsages');
 const {getInterviewInfoListForNotification, addNotifiedUserIds, getClosedInterviews} = require('./jobs/projects');
 const {getUserNotificationTokenList} = require('./jobs/users');
 const {sendNotification} = require('./jobs/notification');
-const {insertUncrawledApps} = require('./jobs/uncrawledApps');
+const {upsertUncrawledApps} = require('./jobs/uncrawledApps');
 const {addNotificationInterview, getNotificationInterviews, removeNotificationInterview} = require('./jobs/notificationInterviews');
 const {backup} = require('./jobs/backupShortTermStats');
 const {getBatchJobs} = require('./jobs/jobs');
@@ -133,7 +133,7 @@ agenda.define('remove notification-interviews collection', function (job, done) 
 
 agenda.define('insert uncrawled-apps from apps and app-usages', function (job, done) {
     console.log('[job] =====> insert uncrawled-apps from apps and app-usages' + new Date());
-    insertUncrawledApps().then((test) => {
+    upsertUncrawledApps().then((test) => {
         console.log(test);
         console.log('insert uncrawled-apps from apps and app-usages done');
         done();

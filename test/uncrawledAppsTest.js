@@ -3,7 +3,7 @@ const should = chai.should();
 const AppUsages = require('./../models/appUsages');
 const Apps = require('./../models/apps');
 const UncrawledApps = require('../models/uncrawledApps');
-const {insertUncrawledApps} = require('./../jobs/uncrawledApps');
+const {upsertUncrawledApps} = require('./../jobs/uncrawledApps');
 
 require('../db').init();
 
@@ -41,6 +41,11 @@ describe('uncrawledApps Test', () => {
             },
             {
                 packageName: 'com.package6.com',
+                userId: 'userId1',
+                totalUsedTime: 1234
+            },
+            {
+                packageName: 'com.package6.com',
                 userId: 'userId2',
                 totalUsedTime: 1188
             },
@@ -57,9 +62,8 @@ describe('uncrawledApps Test', () => {
 
     });
 
-
-    it('getUncrawledApps가 호출되면 uncrawledApps가 조회된다', (done) => {
-        insertUncrawledApps().then(() => {
+    it('upsertUncrawledApps 호출 시 언크롤드 앱들이 UncrwaledApps 에 저장된다', (done) => {
+        upsertUncrawledApps().then(() => {
             UncrawledApps.find({}).then(result => {
                 result.length.should.be.eql(2);
                 let expectedApps = ['com.package6.com', 'com.package7.com'];
@@ -69,6 +73,33 @@ describe('uncrawledApps Test', () => {
             }).catch(err => done(err));
 
         }).catch(err => done(err));
+    });
+
+    describe('기존 데이터가 존재하는 경우', () => {
+        beforeEach((done) => {
+            UncrawledApps.create([{
+                "packageName" : "com.package6.com"
+            }], done);
+        });
+
+        it('upsertUncrawledApps 가 호출되면 기존 데이터를 제외한 언크롤드 앱들이 UncrwaledApps 에 저장된다', (done) => {
+            UncrawledApps.find({}).then(result => {
+                result.length.should.be.eql(1);
+                result[0].packageName.should.be.eql('com.package6.com');
+                return upsertUncrawledApps();
+            }).then(() => {
+                return UncrawledApps.find({})
+            }).then(result => {
+                result.length.should.be.eql(2);
+                result[0].packageName.should.be.eql('com.package6.com');
+                result[1].packageName.should.be.eql('com.package7.com');
+                done();
+            }).catch(err => done(err));
+        });
+
+        afterEach((done) => {
+            UncrawledApps.remove({}, done);
+        });
     });
 
     afterEach((done) => {

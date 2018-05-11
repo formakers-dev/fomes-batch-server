@@ -5,3 +5,4 @@ com
 .DS_Store
 setupRelease.sh
 setupDevelopment.sh
+package-lock.json
