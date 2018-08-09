@@ -2,6 +2,7 @@ defaults: &defaults
     working_directory: ~/appbeebatch # directory where steps will run
     docker:
       - image: circleci/node:8.11
+      - image: circleci/mongo:3.6.6
         environment:
           TZ: "/usr/share/zoneinfo/Asia/Tokyo"
 
@@ -25,14 +26,6 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - run:
-          name: install mongo
-          command: |
-            sudo apt-get install apt-transport-https
-            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
-            echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
-            sudo apt-get update
-            sudo apt-get install -y mongodb-org=4.0.1 mongodb-org-server=4.0.1 mongodb-org-shell=4.0.1 mongodb-org-mongos=4.0.1 mongodb-org-tools=4.0.1
       - run:
           name: test
           command: npm test
