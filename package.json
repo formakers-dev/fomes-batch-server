@@ -15,12 +15,13 @@
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
     "moxios": "^0.4.0",
+    "nyc": "^12.0.2",
     "sinon": "^4.1.2"
   },
   "scripts": {
     "start": "export NODE_ENV=development && node_modules/forever/bin/forever index.js",
     "dev": "export NODE_ENV=development && node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "export NODE_ENV=test && nyc mocha --timeout 10000"
   },
   "author": "appbee",
   "license": "ISC"
