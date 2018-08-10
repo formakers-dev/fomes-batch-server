@@ -16,11 +16,6 @@ jobs:
       - run:
           name: prepare for mongo
           command: |
-            echo "[circleci] remove old mongo"
-            dpkg --get-selections | grep mongo
-            sudo apt-get autoremove --purge mongodb-server
-            sudo apt-get autoremove --purge mongodb-org
-            sudo apt-get autoremove --purge mongodb-org-server
             echo "[circleci] install dependencies"
             sudo apt-get install apt-transport-https
             echo "[circleci] adding a new apt-key"
@@ -29,8 +24,7 @@ jobs:
             echo "[circleci] updating apt"
             sudo apt-get update
             echo "[circleci] installing mongodb"
-            sudo apt-get install -y mongodb-org-server
-            sudo apt-get install -y mongodb-org
+            sudo apt-get install -y mongodb-org=3.6.6 mongodb-org-server=3.6.6 mongodb-org-shell=3.6.6 mongodb-org-mongos=3.6.6 mongodb-org-tools=3.6.6
             echo "[circleci] mongodb install script comleted"
       - run:
           name: check mongo
