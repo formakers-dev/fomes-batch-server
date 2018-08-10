@@ -2,6 +2,7 @@ defaults: &defaults
     working_directory: ~/appbeebatch # directory where steps will run
     docker:
       - image: circleci/node:8.11
+      - image: python:3.6.1
       - image: mongo:3.6.6-jessie
         environment:
           TZ: "/usr/share/zoneinfo/Asia/Tokyo"
@@ -12,6 +13,9 @@ jobs:
     <<: *defaults
     steps:                            # a collection of executable commands
       - checkout                      # special step to check out source code to working directory
+      - run:
+          name: check mongo
+          command: mongo --version
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
