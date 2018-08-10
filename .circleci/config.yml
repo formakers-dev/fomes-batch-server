@@ -16,14 +16,16 @@ jobs:
       - run:
           name: prepare for mongo
           command: |
-            echo "adding a new apt-key"
+            echo "[circleci] install dependencies"
+            sudo apt-get install apt-transport-https
+            echo "[circleci] adding a new apt-key"
             sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
             echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
-            echo "updating apt"
+            echo "[circleci] updating apt"
             sudo apt-get update
-            echo "installing mongodb"
+            echo "[circleci] installing mongodb"
             sudo apt-get install -y mongodb-org
-            echo "mongodb install script comleted"
+            echo "[circleci] mongodb install script comleted"
       - run:
           name: check mongo
           command: mongo --version
