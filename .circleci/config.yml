@@ -17,12 +17,12 @@ jobs:
           name: prepare for mongo
           command: |
             echo "adding a new apt-key"
-            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
-            echo "deb http://downloads-distro.mongodb.org/repo/debian-sysvinit 8 dist 10gen" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+            echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
             echo "updating apt"
             sudo apt-get update
             echo "installing mongodb"
-            sudo apt-get install -y mongodb-org-shell
+            sudo apt-get install -y mongodb-org
             echo "mongodb install script comleted"
       - run:
           name: check mongo
