@@ -2,8 +2,8 @@ defaults: &defaults
     working_directory: ~/appbeebatch # directory where steps will run
     docker:
       - image: circleci/node:8.11
-      - image: python:3.6.1
-      - image: mongo:3.6.6-jessie
+      - image: circleci/python:3.6.1
+      - image: circleci/mongo:3.6.6-jessie
         environment:
           TZ: "/usr/share/zoneinfo/Asia/Tokyo"
 
