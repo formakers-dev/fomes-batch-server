@@ -24,6 +24,8 @@ jobs:
             echo "[circleci] updating apt"
             sudo apt-get update
             echo "[circleci] installing mongodb"
+            sudo apt-get --reinstall install mongodb
+            echo "[circleci] installing mongodb 3.6.6"
             sudo apt-get --reinstall install -y mongodb-org=3.6.6 mongodb-org-server=3.6.6 mongodb-org-shell=3.6.6 mongodb-org-mongos=3.6.6 mongodb-org-tools=3.6.6
             echo "[circleci] mongodb install script comleted"
       - run:
