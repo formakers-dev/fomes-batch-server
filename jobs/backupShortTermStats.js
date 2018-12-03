@@ -13,36 +13,32 @@ const backup = (downloadFilePath) => {
 
 const renameCommand = () => {
     console.log(tag, '================ 1. rename from short-term-stats to backup-short-term-stats');
-    const response = shell.exec('mongo --host=' + config.backup.host + ' --port=' + config.backup.port +
-        ' -u ' + config.backup.username + ' -p ' + config.backup.password + ' --authenticationDatabase admin' +
-        ' --eval "db.getCollection(\'short-term-stats\').renameCollection(\'backup-short-term-stats\')"' +
-        ' --ssl --sslAllowInvalidCertificates ' + config.backup.dbName);
+
+    const response = shell.exec(`mongo "${config.dbUrl}" --eval "db.getCollection('short-term-stats').renameCollection('backup-short-term-stats')"`);
+
     checkResponse(response);
 
     const regex = /[^{]*{[^}]*"?ok"?\s?:\s?([^\s]),?[^}]*}.*/;
     const matchedGroups = response.stdout.match(regex);
     console.log(tag, matchedGroups);
 
-    if (matchedGroups === null || matchedGroups === undefined || matchedGroups.length <= 1 || matchedGroups[1] == 0) {
+    if (matchedGroups === null || matchedGroups === undefined || matchedGroups.length <= 1 || matchedGroups[1] === 0) {
         console.log(tag, '[error] 컬렉션명 변경에 실패했습니다. (backup-short-term-stats가 이미 존재하거나 응답 포맷이 변경되었을 수 있습니다.)');
     }
 };
 
 const downloadCommand = (downloadFilePath) => {
-    console.log(tag, '================ 2. mongoexport');
-    const response = shell.exec('mongoexport --host=' + config.backup.host + ' --port=' + config.backup.port +
-        ' -u ' + config.backup.username + ' -p ' + config.backup.password + ' --authenticationDatabase admin' +
-        ' --ssl --sslAllowInvalidCertificates --db=' + config.backup.dbName +
-        ' --collection=backup-short-term-stats --type=json --out=' + downloadFilePath);
-    checkResponse(response);
-};
+    console.log(tag, '================ 2. export backup-short-term-stats collection');
 
+    const response = shell.exec(`mongoexport --uri "${config.dbUrl}" --collection "backup-short-term-stats" --type "json" --out "${downloadFilePath}"`);
+
+    checkResponse(response);
+
+};
 const dropCommand = () => {
     console.log(tag, '================ 3. drop backup-short-term-stats');
-    const response = shell.exec('mongo --host=' + config.backup.host + ' --port=' + config.backup.port +
-        ' -u ' + config.backup.username + ' -p ' + config.backup.password + ' --authenticationDatabase admin' +
-        ' --eval "db.getCollection(\'backup-short-term-stats\').drop()"' +
-        ' --ssl --sslAllowInvalidCertificates ' + config.backup.dbName);
+
+    const response = shell.exec(`mongo "${config.dbUrl}" --eval "db.getCollection('backup-short-term-stats').drop()"`);
 
     checkResponse(response);
 
