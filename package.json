@@ -19,7 +19,7 @@
     "sinon": "^4.1.2"
   },
   "scripts": {
-    "start": "export NODE_ENV=production && node_modules/forever/bin/forever index.js > ~/logs/batch/$(date +%Y-%m-%d:%H:%M)_batch.log 2> ~/logs/batch/$(date +%Y-%m-%d:%H:%M)_batch.err",
+    "start": "export NODE_ENV=production && node_modules/forever/bin/forever index.js > ~/logs/batch/$(date +%Y-%m-%d_%H:%M)_batch.log 2> ~/logs/batch/$(date +%Y-%m-%d_%H:%M)_batch.err",
     "dev": "export NODE_ENV=development && node index.js",
     "test": "export NODE_ENV=test && nyc mocha --timeout 10000"
   },
