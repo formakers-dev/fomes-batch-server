@@ -4,7 +4,7 @@ const {getAppUsedUserList} = require('./jobs/appUsages');
 const {getInterviewInfoListForNotification, addNotifiedUserIds, getClosedInterviews} = require('./jobs/projects');
 const {getUserNotificationTokenList} = require('./jobs/users');
 const {sendNotification} = require('./jobs/notification');
-const {upsertUncrawledApps} = require('./jobs/uncrawledApps');
+const {runCrawlerForUncrawledApps} = require('./jobs/crawling');
 const {addNotificationInterview, getNotificationInterviews, removeNotificationInterview} = require('./jobs/notificationInterviews');
 const {backup} = require('./jobs/backupShortTermStats');
 const {getBatchJobs} = require('./jobs/jobs');
@@ -131,13 +131,10 @@ agenda.define('remove notification-interviews collection', function (job, done) 
 });
 /** End of 노티 전송 플로우 **/
 
-agenda.define('insert uncrawled-apps from apps and app-usages', function (job, done) {
-    console.log('[job] =====> insert uncrawled-apps from apps and app-usages' + new Date());
-    upsertUncrawledApps().then((test) => {
-        console.log(test);
-        console.log('insert uncrawled-apps from apps and app-usages done');
-        done();
-    })
+agenda.define('run crawler for uncrawled apps', function (job, done) {
+    console.log('[job] =====> run crawler for uncrawled apps' + new Date());
+    runCrawlerForUncrawledApps();
+    done();
 });
 
 agenda.define('backup for shortTermStats', function (job, done) {
@@ -213,8 +210,8 @@ agenda.on('ready', function () {
         agenda.every('0 4 * * *', 'backup for shortTermStats');
         // 노티 대상자 추출 batch: 1:00
         agenda.every('0 1 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
-        // 언크롤드앱 추출 batch: 2:30
-        agenda.every('30 2 * * *', 'insert uncrawled-apps from apps and app-usages');
+        // 언크롤드앱 크롤러 실행 batch: 2:30
+        agenda.every('30 2 * * *', 'run crawler for uncrawled apps');
         // 노티 batch: 매 00분 30분
         agenda.every('*/30 * * * *', 'observe notification');
 

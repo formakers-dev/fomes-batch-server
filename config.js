@@ -13,6 +13,15 @@ config.development = {
         password: process.env.BACKUP_PASSWORD,
         dbName: 'appbee',
         outputPath: process.env.BACKUP_OUTPUT_PATH ,
+    },
+    crawler: {
+        rootDirPath: process.env.FOMES_CRAWLER_ROOT_DIR_PATH,
+        logDirPath: process.env.FOMES_CRAWLER_LOG_DIR_PATH,
+        uncrawledApp: {
+            spiderName: process.env.FOMES_UNCRAWLED_APP_SPIDER_NAME,
+            getLogFilePath: () => config.test.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.test.crawler.uncrawledApp.spiderName + '.log',
+            getErrorLogFilePath: () => config.test.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.test.crawler.uncrawledApp.spiderName + '.err'
+        },
     }
 };
 
@@ -32,6 +41,15 @@ config.test = {
         password: process.env.BACKUP_PASSWORD,
         dbName: 'test',
         outputPath: process.env.BACKUP_OUTPUT_PATH + 'test/',
+    },
+    crawler: {
+        rootDirPath: '/test/crawler/root/dir/path/',
+        logDirPath: '/test/crawler/log/dir/path/',
+        uncrawledApp: {
+            spiderName: 'TestUncrawledAppSpiderName',
+            getLogFilePath: () => config.test.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.test.crawler.uncrawledApp.spiderName + '.log',
+            getErrorLogFilePath: () => config.test.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.test.crawler.uncrawledApp.spiderName + '.err'
+        },
     }
 };
 
