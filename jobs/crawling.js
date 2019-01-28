@@ -5,10 +5,18 @@ const tag = () => {
     return '[' + new Date().toISOString() + '][crawler]';
 };
 
+const getLogFilePath = () => {
+    return config.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.crawler.uncrawledApp.spiderName + '.log'
+};
+
+const getErrorLogFilePath = () => {
+    return config.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.crawler.uncrawledApp.spiderName + '.err'
+};
+
 const runCrawlerForUncrawledApps = () => {
     console.log(tag(), 'Execute shell commands to run crawler for UncrawledApps');
 
-    const response = shell.exec(`cd ${config.crawler.rootDirPath} && nohup scrapy crawl ${config.crawler.uncrawledApp.spiderName} > ${config.crawler.uncrawledApp.getLogFilePath()} 2> ${config.crawler.uncrawledApp.getErrorLogFilePath()} &`);
+    const response = shell.exec(`cd ${config.crawler.rootDirPath} && nohup scrapy crawl ${config.crawler.uncrawledApp.spiderName} > ${getLogFilePath()} 2> ${getErrorLogFilePath()} &`);
 
     checkResponse(response);
 };
