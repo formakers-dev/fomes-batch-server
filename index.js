@@ -131,8 +131,8 @@ agenda.define('remove notification-interviews collection', function (job, done) 
 });
 /** End of 노티 전송 플로우 **/
 
-agenda.define('run crawler for uncrawled apps', function (job, done) {
-    console.log('[job] =====> run crawler for uncrawled apps' + new Date());
+agenda.define('run crawling for uncrawled apps', function (job, done) {
+    console.log('[job] =====> run crawling for uncrawled apps' + new Date());
     runCrawlerForUncrawledApps();
     done();
 });
@@ -198,7 +198,7 @@ const getNotificationBaseHourMinute = () => {
 };
 
 agenda.on('ready', function () {
-    console.log('agenda start!');
+    console.log('Agenda start with', process.env.NODE_ENV);
 
     agenda.jobs({}, (err, jobs) => {
         // 기존 Job정보 제거
@@ -211,7 +211,7 @@ agenda.on('ready', function () {
         // 노티 대상자 추출 batch: 1:00
         agenda.every('0 1 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
         // 언크롤드앱 크롤러 실행 batch: 2:30
-        agenda.every('30 2 * * *', 'run crawler for uncrawled apps');
+        agenda.every('30 2 * * *', 'run crawling for uncrawled apps');
         // 노티 batch: 매 00분 30분
         agenda.every('*/30 * * * *', 'observe notification');
 

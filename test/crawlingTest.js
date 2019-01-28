@@ -2,7 +2,7 @@ const chai = require('chai');
 const should = chai.should();
 const sinon = require('sinon');
 const shell = require('shelljs');
-const crawler = require('../jobs/crawling');
+const crawling = require('../jobs/crawling');
 
 describe('Crawler Job Test', () => {
     describe('runCrawlerForUncrawledApps 호출 시', () => {
@@ -10,7 +10,7 @@ describe('Crawler Job Test', () => {
             const shellExecStub = sinon.stub(shell, 'exec');
             shellExecStub.callsFake(() => response = {code: 0});
 
-            crawler.runCrawlerForUncrawledApps();
+            crawling.runCrawlerForUncrawledApps();
 
             const shellCommand = shellExecStub.getCall(0).args[0];
 

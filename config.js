@@ -19,8 +19,6 @@ config.development = {
         logDirPath: process.env.FOMES_CRAWLER_LOG_DIR_PATH,
         uncrawledApp: {
             spiderName: process.env.FOMES_UNCRAWLED_APP_SPIDER_NAME,
-            getLogFilePath: () => config.test.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.test.crawler.uncrawledApp.spiderName + '.log',
-            getErrorLogFilePath: () => config.test.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.test.crawler.uncrawledApp.spiderName + '.err'
         },
     }
 };
@@ -47,8 +45,6 @@ config.test = {
         logDirPath: '/test/crawler/log/dir/path/',
         uncrawledApp: {
             spiderName: 'TestUncrawledAppSpiderName',
-            getLogFilePath: () => config.test.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.test.crawler.uncrawledApp.spiderName + '.log',
-            getErrorLogFilePath: () => config.test.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.test.crawler.uncrawledApp.spiderName + '.err'
         },
     }
 };
