@@ -4,7 +4,7 @@ const {getAppUsedUserList, removeOldUsages} = require('./jobs/appUsages');
 const {getInterviewInfoListForNotification, addNotifiedUserIds, getClosedInterviews} = require('./jobs/projects');
 const {getUserNotificationTokenList} = require('./jobs/users');
 const {sendNotification} = require('./jobs/notification');
-const {runCrawlerForUncrawledApps} = require('./jobs/crawling');
+const {runCrawlerForUncrawledApps, runCrawlerForRankedApps} = require('./jobs/crawling');
 const {addNotificationInterview, getNotificationInterviews, removeNotificationInterview} = require('./jobs/notificationInterviews');
 const {backup} = require('./jobs/backupShortTermStats');
 const {getBatchJobs} = require('./jobs/jobs');
@@ -138,6 +138,13 @@ agenda.define('run crawling for uncrawled apps', function (job, done) {
     done();
 });
 
+/** 랭크드 앱 크롤링 **/
+agenda.define('run crawling for ranked apps', function (job, done) {
+    console.log('[job] =====> run crawling for ranked apps' + new Date());
+    runCrawlerForRankedApps();
+    done();
+});
+
 /** 단기통계 데이터 백업 **/
 agenda.define('backup for shortTermStats', function (job, done) {
     console.log('[job] =====> backup for shortTermStats' + new Date());
@@ -229,6 +236,8 @@ agenda.on('ready', function () {
         agenda.every('0 1 * * *', 'get interview infos for notification'); // cron 표현식 : '분 시 일 월 요일'
         // 언크롤드앱 크롤러 실행 batch: 2:30
         agenda.every('30 2 * * *', 'run crawling for uncrawled apps');
+        // 랭크드 앱 크롤러 실행 batch: 매주 월요일 1:30
+        agenda.every('30 1 * * MON', 'run crawling for ranked apps');
         // 노티 batch: 매 00분 30분
         agenda.every('*/30 * * * *', 'observe notification');
 

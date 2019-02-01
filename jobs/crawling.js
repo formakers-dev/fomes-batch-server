@@ -2,23 +2,32 @@ const shell = require('shelljs');
 const config = require('../config');
 
 const tag = () => {
-    return '[' + new Date().toISOString() + '][crawler]';
+    return '[' + new Date().toISOString() + '][crawling]';
 };
 
-const getLogFilePath = () => {
-    return config.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.crawler.uncrawledApp.spiderName + '.log'
+const getLogFilePath = (spiderName) => {
+    return config.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + spiderName + '.log'
 };
 
-const getErrorLogFilePath = () => {
-    return config.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.crawler.uncrawledApp.spiderName + '.err'
+const getErrorLogFilePath = (spiderName) => {
+    return config.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + spiderName + '.err'
+};
+
+const runCrawler = (spiderName, urls) => {
+    console.log(tag(), 'Execute shell commands to run crawling for', spiderName);
+
+    const argUrls = urls ? `-a urls="${urls}" ` : '';
+    const response = shell.exec(`cd ${config.crawler.rootDirPath} && nohup scrapy crawl ${spiderName} ${argUrls}> ${getLogFilePath(spiderName)} 2> ${getErrorLogFilePath(spiderName)} &`);
+
+    checkResponse(response);
 };
 
 const runCrawlerForUncrawledApps = () => {
-    console.log(tag(), 'Execute shell commands to run crawler for UncrawledApps');
+    runCrawler(config.crawler.uncrawledApp.spiderName);
+};
 
-    const response = shell.exec(`cd ${config.crawler.rootDirPath} && nohup scrapy crawl ${config.crawler.uncrawledApp.spiderName} > ${getLogFilePath()} 2> ${getErrorLogFilePath()} &`);
-
-    checkResponse(response);
+const runCrawlerForRankedApps = () => {
+    runCrawler(config.crawler.rankedApp.spiderName, config.crawler.rankedApp.urls);
 };
 
 const checkResponse = (response) => {
@@ -33,4 +42,4 @@ const checkResponse = (response) => {
     }
 };
 
-module.exports = {runCrawlerForUncrawledApps};
+module.exports = {runCrawlerForUncrawledApps, runCrawlerForRankedApps};
