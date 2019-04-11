@@ -8,7 +8,6 @@
     "axios": "^0.17.1",
     "forever": "^1.0.0",
     "mongoose": "^4.13.18",
-    "mongoose-auto-increment": "^5.0.1",
     "shelljs": "^0.7.8"
   },
   "devDependencies": {
