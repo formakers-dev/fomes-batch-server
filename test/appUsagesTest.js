@@ -4,8 +4,6 @@ const AppUsages = require('./../models/appUsages');
 const sinon = require('sinon');
 const {removeOldUsages} = require('./../jobs/appUsages');
 
-require('../db').init();
-
 describe('AppUsages test', () => {
     const sandbox = sinon.createSandbox();
 
@@ -66,7 +64,9 @@ describe('AppUsages test', () => {
             },
         ];
 
-        AppUsages.create(initialData, done);
+        AppUsages.create(initialData)
+            .then(() => done())
+            .catch(err => done(err));
     });
 
     describe('removeOldUsages가 호출되면', function () {
@@ -121,7 +121,9 @@ describe('AppUsages test', () => {
     });
 
     afterEach((done) => {
-        AppUsages.remove({}, done);
+        AppUsages.deleteMany({})
+            .then(() => done())
+            .catch(err => done(err));
     });
 });
 

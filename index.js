@@ -4,7 +4,6 @@ const {removeOldUsages} = require('./jobs/appUsages');
 const {runCrawlerForUncrawledApps, runCrawlerForRankedApps} = require('./jobs/crawling');
 const {backup} = require('./jobs/backupShortTermStats');
 const log = require('./utils/log');
-require('./db').init();
 
 const agenda = new Agenda({db: {address: config.agendaDBUrl, collection: 'agenda-jobs'}});
 

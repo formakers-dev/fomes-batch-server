@@ -14,7 +14,7 @@ const backup = (downloadFilePath) => {
 const renameCommand = () => {
     log.info(TAG, '1. rename "short-term-stats" collection to "backup-short-term-stats"');
 
-    const response = shell.exec(`mongo "${config.dbUrl}" --eval "db.getCollection('short-term-stats').renameCollection('backup-short-term-stats')"`);
+    const response = shell.exec(`mongo "${config.fomesDbUrl}" --eval "db.getCollection('short-term-stats').renameCollection('backup-short-term-stats')"`);
 
     checkResponse(response);
 
@@ -29,7 +29,7 @@ const renameCommand = () => {
 const downloadCommand = (downloadFilePath) => {
     log.info(TAG, '2. export backup-short-term-stats collection');
 
-    const response = shell.exec(`mongoexport --uri "${config.dbUrl}" --collection "backup-short-term-stats" --type "json" --out "${downloadFilePath}"`);
+    const response = shell.exec(`mongoexport --uri "${config.fomesDbUrl}" --collection "backup-short-term-stats" --type "json" --out "${downloadFilePath}"`);
 
     checkResponse(response);
 
@@ -37,16 +37,16 @@ const downloadCommand = (downloadFilePath) => {
 const dropCommand = () => {
     log.info(TAG, '3. drop backup-short-term-stats');
 
-    const response = shell.exec(`mongo "${config.dbUrl}" --eval "db.getCollection('backup-short-term-stats').drop()"`);
+    const response = shell.exec(`mongo "${config.fomesDbUrl}" --eval "db.getCollection('backup-short-term-stats').drop()"`);
 
     checkResponse(response);
 
     const regex = /.*(true).*/;
     const matchedGroups = response.stdout.match(regex);
-    log.info(TAG, matchedGroups);
 
     if (matchedGroups === null || matchedGroups === undefined || matchedGroups.length <= 1 || matchedGroups[1] !== 'true') {
         log.info(TAG, '[error] 삭제에 실패했습니다. (backup-short-term-stats이 존재하지 않거나 응답 포맷이 변경되었을 수 있습니다.)');
+        log.info(TAG, 'Matched Groups:', matchedGroups);
     }
 };
 

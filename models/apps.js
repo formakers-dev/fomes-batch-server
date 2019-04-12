@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+const connection = require('../db').FOMES;
 const Schema = mongoose.Schema;
 
 const appsSchema = new Schema({
     packageName: String,
 });
 
-module.exports = mongoose.model('apps', appsSchema);
+module.exports = connection.model('apps', appsSchema);

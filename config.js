@@ -2,7 +2,7 @@ const config = {};
 
 config.development = {
     agendaDBUrl: process.env.AGENDA_MONGO_URL,
-    dbUrl: process.env.MONGO_URL,
+    fomesDbUrl: process.env.FOMES_DB_URL,
     firebaseMessaging: {
         serverKey: process.env.SERVER_KEY
     },
@@ -32,7 +32,7 @@ config.production = config.development;
 
 config.test = {
     agendaDBUrl: process.env.AGENDA_MONGO_URL,
-    dbUrl: process.env.MONGO_URL,
+    fomesDbUrl: process.env.FOMES_DB_URL,
     firebaseMessaging: {
         serverKey: 'testServerKey'
     },

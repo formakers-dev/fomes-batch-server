@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const connection = require('../db').FOMES;
 const Schema = mongoose.Schema;
 
 const appUsagesSchema = new Schema({
@@ -8,4 +9,4 @@ const appUsagesSchema = new Schema({
     updateTime: Date,
 });
 
-module.exports = mongoose.model('app-usages', appUsagesSchema);
+module.exports = connection.model('app-usages', appUsagesSchema);
