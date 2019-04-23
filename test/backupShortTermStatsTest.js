@@ -4,9 +4,7 @@ const fs = require('fs');
 const ShortTermStats = require('./../models/shortTermStats').shortTermStatsList;
 const BackupShortTermStats = require('./../models/shortTermStats').backupShortTermStatsList;
 const {renameCommand, downloadCommand, dropCommand} = require('../jobs/backupShortTermStats');
-const mongoose = require('mongoose');
-
-require('../db').init();
+const fomesDbConnection = require('../db').FOMES;
 
 describe('ShortTermStats test', () => {
 
@@ -33,21 +31,24 @@ describe('ShortTermStats test', () => {
 
     describe('sbort-term-stats를 backup-short-term-stats로 rename 한다.', () => {
         before(done => {
-            ShortTermStats.remove({}, () => {
-                ShortTermStats.create(data, done);
-            });
+            ShortTermStats.deleteMany({})
+                .then(() => ShortTermStats.create(data))
+                .then(() => done())
+                .catch(err => done(err));
         });
+
         it('backup 호출시, short-term-stats를 backup-short-term-stats 으로 리네임한다.', (done) => {
             // short-term-stat
             renameCommand();
-            mongoose.connection.db.listCollections({name: 'backup-short-term-stats'})
+            fomesDbConnection.db.listCollections({name: 'backup-short-term-stats'})
                 .next(function(err, collectionInfo) {
                     should.exist(collectionInfo);
                     done();
                 });
         });
+
         after(done => {
-            mongoose.connection.db.dropCollection('backup-short-term-stats', () => {
+            fomesDbConnection.db.dropCollection('backup-short-term-stats', () => {
                 done();
             });
         });
@@ -56,7 +57,9 @@ describe('ShortTermStats test', () => {
     describe('backup 호출시, backup-short-term-stats를 백업하여 backupShortTermStats.json을 만든다.', () => {
         const path = process.env.BACKUP_OUTPUT_PATH + '/test/backup-short-term-stats.json';
         before(done => {
-            BackupShortTermStats.create(data, done);
+            BackupShortTermStats.create(data)
+                .then(() => done())
+                .catch(err => done(err));
         });
 
         it('backup 호출시, backup-short-term-stats를 백업하여 backupShortTermStats.json을 만든다.', () => {
@@ -67,13 +70,15 @@ describe('ShortTermStats test', () => {
 
     describe('backup 호출시, backup-short-term-stats이 삭제된다', () => {
         before(done => {
-            BackupShortTermStats.create(data, done);
+            BackupShortTermStats.create(data)
+                .then(() => done())
+                .catch(err => done(err));
         });
 
         it('backup 호출시, backup-short-term-stats이 삭제된다', (done) => {
             // backup-short-term-stats
             dropCommand();
-            mongoose.connection.db.listCollections({name: 'backup-short-term-stats'})
+            fomesDbConnection.db.listCollections({name: 'backup-short-term-stats'})
                 .next(function(err, collectionInfo) {
                     should.not.exist(collectionInfo);
                     done();

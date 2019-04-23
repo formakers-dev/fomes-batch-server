@@ -2,7 +2,8 @@ const config = {};
 
 config.development = {
     agendaDBUrl: process.env.AGENDA_MONGO_URL,
-    dbUrl: process.env.MONGO_URL,
+    fomesDbUrl: process.env.FOMES_DB_URL,
+    slackBotToken: process.env.SLACK_BOT_TOKEN,
     firebaseMessaging: {
         serverKey: process.env.SERVER_KEY
     },
@@ -20,6 +21,10 @@ config.development = {
         uncrawledApp: {
             spiderName: process.env.FOMES_UNCRAWLED_APP_SPIDER_NAME,
         },
+        app: {
+            spiderName: process.env.FOMES_RANKED_APP_SPIDER_NAME,
+            urls: process.env.FOEMS_RANKED_APP_SPIDER_URLS
+        },
     }
 };
 
@@ -28,7 +33,8 @@ config.production = config.development;
 
 config.test = {
     agendaDBUrl: process.env.AGENDA_MONGO_URL,
-    dbUrl: process.env.MONGO_URL,
+    fomesDbUrl: process.env.FOMES_DB_URL,
+    slackBotToken: process.env.SLACK_BOT_TOKEN,
     firebaseMessaging: {
         serverKey: 'testServerKey'
     },
@@ -45,6 +51,10 @@ config.test = {
         logDirPath: '/test/crawler/log/dir/path/',
         uncrawledApp: {
             spiderName: 'TestUncrawledAppSpiderName',
+        },
+        rankedApp: {
+            spiderName: 'TestRankedAppSpiderName',
+            urls: 'test.ranking-urls.com'
         },
     }
 };

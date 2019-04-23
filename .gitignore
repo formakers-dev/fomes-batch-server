@@ -5,7 +5,6 @@ com
 .DS_Store
 setupRelease.sh
 setupDevelopment.sh
-package-lock.json
 /.nyc_output
 npm-debug.log
 backup/

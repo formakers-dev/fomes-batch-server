@@ -1,36 +1,43 @@
 const shell = require('shelljs');
 const config = require('../config');
+const log = require('../utils/log');
+const TAG = 'crawling';
 
-const tag = () => {
-    return '[' + new Date().toISOString() + '][crawler]';
+const getLogFilePath = (spiderName) => {
+    return config.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + spiderName + '.log'
 };
 
-const getLogFilePath = () => {
-    return config.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.crawler.uncrawledApp.spiderName + '.log'
+const getErrorLogFilePath = (spiderName) => {
+    return config.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + spiderName + '.err'
 };
 
-const getErrorLogFilePath = () => {
-    return config.crawler.logDirPath + '/$(date +%Y-%m-%d_%H:%M)_' + config.crawler.uncrawledApp.spiderName + '.err'
-};
+const runCrawler = (spiderName, urls) => {
+    log.info(TAG, 'Execute shell commands to run crawling for', spiderName);
 
-const runCrawlerForUncrawledApps = () => {
-    console.log(tag(), 'Execute shell commands to run crawler for UncrawledApps');
-
-    const response = shell.exec(`cd ${config.crawler.rootDirPath} && nohup scrapy crawl ${config.crawler.uncrawledApp.spiderName} > ${getLogFilePath()} 2> ${getErrorLogFilePath()} &`);
+    const argUrls = urls ? `-a urls="${urls}" ` : '';
+    const response = shell.exec(`cd ${config.crawler.rootDirPath} && nohup scrapy crawl ${spiderName} ${argUrls}> ${getLogFilePath(spiderName)} 2> ${getErrorLogFilePath(spiderName)} &`);
 
     checkResponse(response);
 };
 
+const runCrawlerForUncrawledApps = () => {
+    runCrawler(config.crawler.uncrawledApp.spiderName);
+};
+
+const runCrawlerForRankedApps = () => {
+    runCrawler(config.crawler.rankedApp.spiderName, config.crawler.rankedApp.urls);
+};
+
 const checkResponse = (response) => {
-    console.log(tag(), response);
+    log.info(TAG, '[shell.stdout]', response);
 
     if (response.code !== 0) {
-        console.log(tag(), '[error] previous command occur a error. so, this job is going to finish');
-        console.error(response.stderr);
+        log.info(TAG, '[error] previous command occur a error. so, this job is going to finish');
+        log.error(TAG, '[shell.stderr]', response.stderr);
 
         // TODO : 논의필요. 배치는 무정지 서버로 유지해야하지 않을지?
         shell.exit(1);
     }
 };
 
-module.exports = {runCrawlerForUncrawledApps};
+module.exports = {runCrawlerForUncrawledApps, runCrawlerForRankedApps};
