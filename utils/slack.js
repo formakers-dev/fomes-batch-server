@@ -1,6 +1,6 @@
 const shell = require('shelljs');
 const config = require('../config');
-const log = require('log');
+const log = require('./log');
 const TAG = 'slack';
 
 const sendMessage = (message, channel) => {
