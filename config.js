@@ -3,6 +3,7 @@ const config = {};
 config.development = {
     agendaDBUrl: process.env.AGENDA_MONGO_URL,
     fomesDbUrl: process.env.FOMES_DB_URL,
+    slackBotToken: process.env.SLACK_BOT_TOKEN,
     firebaseMessaging: {
         serverKey: process.env.SERVER_KEY
     },
@@ -33,6 +34,7 @@ config.production = config.development;
 config.test = {
     agendaDBUrl: process.env.AGENDA_MONGO_URL,
     fomesDbUrl: process.env.FOMES_DB_URL,
+    slackBotToken: process.env.SLACK_BOT_TOKEN,
     firebaseMessaging: {
         serverKey: 'testServerKey'
     },

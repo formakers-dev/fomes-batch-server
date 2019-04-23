@@ -4,6 +4,7 @@ const {removeOldUsages} = require('./jobs/appUsages');
 const {runCrawlerForUncrawledApps, runCrawlerForRankedApps} = require('./jobs/crawling');
 const {backup} = require('./jobs/backupShortTermStats');
 const log = require('./utils/log');
+const slack = require('./utils/slack');
 
 const agenda = new Agenda({db: {address: config.agendaDBUrl, collection: 'agenda-jobs'}});
 
@@ -45,6 +46,11 @@ agenda.define('remove old app-usages', function(job, done) {
         });
 });
 
+agenda.define('send working message to slack', function(job, done) {
+    slack.sendMessage('배치 서버 동작 중 👍', '#dev');
+    done();
+});
+
 agenda.on('ready', function () {
     log.info('agenda', `start (${process.env.NODE_ENV})`);
 
@@ -63,6 +69,9 @@ agenda.on('ready', function () {
         agenda.every('0 4 * * *', 'backup for shortTermStats');
         // 오래된 앱사용정보 삭제: 4:30
         agenda.every('30 4 * * *', 'remove old app-usages');
+
+        // 생존신고 슬랙 메시지: 7:00
+        agenda.every('0 7 * * *', 'send working message to slack');
 
         agenda.start();
     });
