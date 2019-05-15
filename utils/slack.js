@@ -6,7 +6,7 @@ const TAG = 'slack';
 const sendMessage = (message, channel) => {
     log.info(TAG, `Send message "${message}" to "${channel}"`);
 
-    const command = `curl -F text="${message}" -F channel="${channel}" -F token=${config.slackBotToken} https://slack.com/api/chat.postMessage`;
+    const command = `curl -F text="${message}" -F channel="${channel}" -F token=${config.slackBotToken} -F as_user=true https://slack.com/api/chat.postMessage`;
     const response = shell.exec(command);
 
     checkResponse(response);
