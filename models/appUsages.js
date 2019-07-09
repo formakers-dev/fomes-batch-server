@@ -6,7 +6,7 @@ const appUsagesSchema = new Schema({
     packageName: String,
     userId: String,
     totalUsedTime: Number,
-    updateTime: Date,
+    date: Date,
 });
 
 module.exports = connection.model('app-usages', appUsagesSchema);
