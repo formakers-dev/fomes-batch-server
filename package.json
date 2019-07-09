@@ -1,6 +1,6 @@
 {
   "name": "appbeebatch",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "AppBee Batch Program",
   "main": "index.js",
   "dependencies": {
