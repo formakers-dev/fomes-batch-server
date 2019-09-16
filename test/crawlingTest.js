@@ -27,6 +27,17 @@ describe('Crawler Job Test', () => {
         });
     });
 
+    describe('runCrawlerToUpdateAppInfo 호출 시', () => {
+        it('환경변수를 이용해 쉘 커멘드를 입력한다', done => {
+            crawling.runCrawlerToUpdateAppInfo();
+
+            const shellCommand = shell.exec.getCall(0).args[0];
+
+            shellCommand.should.be.eql('cd /test/crawler/root/dir/path/ && nohup scrapy crawl TestAppInfoUpdateSpiderName > /test/crawler/log/dir/path//$(date +%Y-%m-%d_%H:%M)_TestAppInfoUpdateSpiderName.log 2> /test/crawler/log/dir/path//$(date +%Y-%m-%d_%H:%M)_TestAppInfoUpdateSpiderName.err &');
+            done();
+        });
+    });
+
     describe('runCrawlerForRankedApps 호출 시', () => {
         it('환경변수를 이용해 쉘 커멘드를 입력한다', done => {
             crawling.runCrawlerForRankedApps();
