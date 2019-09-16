@@ -24,6 +24,10 @@ const runCrawlerForUncrawledApps = () => {
     runCrawler(config.crawler.uncrawledApp.spiderName);
 };
 
+const runCrawlerToUpdateAppInfo = () => {
+    runCrawler(config.crawler.appInfoUpdate.spiderName);
+};
+
 const runCrawlerForRankedApps = () => {
     runCrawler(config.crawler.rankedApp.spiderName, config.crawler.rankedApp.urls);
 };
@@ -40,4 +44,8 @@ const checkResponse = (response) => {
     }
 };
 
-module.exports = {runCrawlerForUncrawledApps, runCrawlerForRankedApps};
+module.exports = {
+    runCrawlerForUncrawledApps,
+    runCrawlerToUpdateAppInfo,
+    runCrawlerForRankedApps,
+};

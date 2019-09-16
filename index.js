@@ -1,7 +1,7 @@
 const Agenda = require('agenda');
 const config = require('./config');
 const {removeOldUsages} = require('./jobs/appUsages');
-const {runCrawlerForUncrawledApps, runCrawlerForRankedApps} = require('./jobs/crawling');
+const {runCrawlerForUncrawledApps, runCrawlerForRankedApps, runCrawlerToUpdateAppInfo} = require('./jobs/crawling');
 const {backup} = require('./jobs/backupShortTermStats');
 const log = require('./utils/log');
 const slack = require('./utils/slack');
@@ -12,6 +12,13 @@ const agenda = new Agenda({db: {address: config.agendaDBUrl, collection: 'agenda
 agenda.define('run crawling for uncrawled apps', function (job, done) {
     log.info('job', 'run crawling for uncrawled apps' + new Date());
     runCrawlerForUncrawledApps();
+    done();
+});
+
+/** 앱사용정보가 존재하는 앱 정보 업데이트 크롤링 **/
+agenda.define('run crawling to update app info', function (job, done) {
+    log.info('job', 'run crawling to update app info' + new Date());
+    runCrawlerToUpdateAppInfo();
     done();
 });
 
@@ -62,6 +69,9 @@ agenda.on('ready', function () {
 
         // 랭크드 앱 크롤러 실행 batch: 매주 월요일 1:30
         agenda.every('30 1 * * MON', 'run crawling for ranked apps');
+        // 앱사용정보가 존재하는 앱 정보 업데이트 크롤러 실행 batch: 매주 화요일 1:30
+        agenda.every('30 1 * * TUE', 'run crawling to update app info');
+
         // 언크롤드앱 크롤러 실행 batch: 2:30
         agenda.every('30 2 * * *', 'run crawling for uncrawled apps');
 
