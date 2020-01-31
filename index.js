@@ -3,6 +3,7 @@ const config = require('./config');
 const {removeOldUsages} = require('./jobs/appUsages');
 const {runCrawlerForUncrawledApps, runCrawlerForRankedApps, runCrawlerToUpdateAppInfo} = require('./jobs/crawling');
 const {backup} = require('./jobs/backupShortTermStats');
+const syncFromPrdToStg = require('./jobs/syncFromPrdToStg');
 const log = require('./utils/log');
 const slack = require('./utils/slack');
 
@@ -58,6 +59,17 @@ agenda.define('send working message to slack', function(job, done) {
     done();
 });
 
+/** PrdDB => StgDB 데이터 자동 동기화 **/
+agenda.define('sync from PrdDB to StgDB', function (job, done) {
+    log.info('job', 'sync from PrdDB to StgDB');
+
+    syncFromPrdToStg('beta-tests');
+    syncFromPrdToStg('posts');
+    // TODO: 베타테스트에 등록된 앱 정보만 가져와야함.
+    syncFromPrdToStg('apps');
+    done();
+});
+
 agenda.on('ready', function () {
     log.info('agenda', `start (${process.env.NODE_ENV})`);
 
@@ -69,6 +81,8 @@ agenda.on('ready', function () {
 
         // 랭크드 앱 크롤러 실행 batch: 매주 월요일 1:30
         agenda.every('30 1 * * MON', 'run crawling for ranked apps');
+        // PrdDB => StgDB 데이터 자동 동기화 batch: 매 주 월요일 3:30
+        agenda.every('30 3 * * MON', 'sync from PrdDB to StgDB');
         // 앱사용정보가 존재하는 앱 정보 업데이트 크롤러 실행 batch: 매주 화요일 1:30
         agenda.every('30 1 * * TUE', 'run crawling to update app info');
 
