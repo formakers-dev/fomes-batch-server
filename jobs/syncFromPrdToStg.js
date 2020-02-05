@@ -1,6 +1,8 @@
 const shell = require('shelljs');
 const config = require('../config');
 const log = require('../utils/log');
+const BetaTests = require('../models/betaTests');
+
 const TAG = 'syncFromPrdToStg';
 
 const syncFromPrdToStg = (collectionName) => {
@@ -15,10 +17,35 @@ const syncFromPrdToStg = (collectionName) => {
     renameCollection(tempCollectionName, collectionName);
 };
 
-const exportCollectionFromPrd = (collectionName, exportFilePath) => {
+const syncAppsFromPrdToStg = () => {
+    return BetaTests.aggregate([
+            {$unwind: "$missions"},
+            {$unwind: "$missions.items"},
+            {$replaceRoot: {newRoot: "$missions.items"}},
+            {$match: {packageName: {$exists: true}}},
+            {$group: {"_id": null, "packageNames": {$addToSet: "$packageName"}}},
+        ])
+        .then(result => {
+            const packageNamesForQuery = `"${result[0].packageNames.join('","')}"`;
+            const query = `{"packageName":{"$in":[${packageNamesForQuery}]}}`;
+
+            const collectionName = 'apps';
+            const exportFilePath = `/tmp/${collectionName}.json`;
+            const tempCollectionName = `temp-${collectionName}`;
+
+            exportCollectionFromPrd(collectionName, exportFilePath, query);
+            importCollectionToStg(tempCollectionName, exportFilePath);
+            dropCollection(collectionName);
+            renameCollection(tempCollectionName, collectionName);
+        });
+};
+
+const exportCollectionFromPrd = (collectionName, exportFilePath, query) => {
     log.info(TAG, `1. Export "${collectionName}" from Prd`);
 
-    const response = shell.exec(`mongoexport --collection="${collectionName}" --out="${exportFilePath}" --type="json" --uri="${config.fomesDbUrl}"`);
+    const queryOption = query != null ? `--query='${query}'` : '';
+    console.log(queryOption);
+    const response = shell.exec(`mongoexport --collection='${collectionName}' --out='${exportFilePath}' --type='json' ${queryOption} --uri='${config.fomesDbUrl}'`);
 
     checkResponse(response);
 };
@@ -59,4 +86,4 @@ const checkResponse = (response) => {
     }
 };
 
-module.exports = syncFromPrdToStg;
+module.exports = {syncFromPrdToStg, syncAppsFromPrdToStg};
