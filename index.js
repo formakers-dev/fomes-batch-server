@@ -3,7 +3,7 @@ const config = require('./config');
 const {removeOldUsages} = require('./jobs/appUsages');
 const {runCrawlerForUncrawledApps, runCrawlerForRankedApps, runCrawlerToUpdateAppInfo} = require('./jobs/crawling');
 const {backup} = require('./jobs/backupShortTermStats');
-const {syncFromPrdToStg, syncAppsFromPrdToStg} = require('./jobs/syncFromPrdToStg');
+const {syncDataToStg, syncAppsDataToStg} = require('./jobs/syncDB');
 const log = require('./utils/log');
 const slack = require('./utils/slack');
 
@@ -63,10 +63,10 @@ agenda.define('send working message to slack', function (job, done) {
 agenda.define('sync from PrdDB to StgDB', function (job, done) {
     log.info('job', 'sync from PrdDB to StgDB');
 
-    syncFromPrdToStg('beta-tests');
-    syncFromPrdToStg('posts');
+    syncDataToStg('beta-tests');
+    syncDataToStg('posts');
     // TODO: 베타테스트에 등록된 앱 정보만 가져와야함.
-    syncAppsFromPrdToStg()
+    syncAppsDataToStg()
         .then(() => done())
         .catch(err => done(err));
 });

@@ -3,10 +3,10 @@ const config = require('../config');
 const log = require('../utils/log');
 const BetaTests = require('../models/betaTests');
 
-const TAG = 'syncFromPrdToStg';
+const TAG = 'syncDB';
 
-const syncFromPrdToStg = (collectionName) => {
-    log.info(TAG, `Start syncing "${collectionName}" from Prd to Stg`);
+const syncDataToStg = (collectionName) => {
+    log.info(TAG, `Start syncing "${collectionName}" to Stg`);
 
     const exportFilePath = `/tmp/${collectionName}.json`;
     const tempCollectionName = `temp-${collectionName}`;
@@ -17,7 +17,7 @@ const syncFromPrdToStg = (collectionName) => {
     renameCollection(tempCollectionName, collectionName);
 };
 
-const syncAppsFromPrdToStg = () => {
+const syncAppsDataToStg = () => {
     return BetaTests.aggregate([
             {$unwind: "$missions"},
             {$unwind: "$missions.items"},
@@ -86,4 +86,4 @@ const checkResponse = (response) => {
     }
 };
 
-module.exports = {syncFromPrdToStg, syncAppsFromPrdToStg};
+module.exports = {syncDataToStg, syncAppsDataToStg};
