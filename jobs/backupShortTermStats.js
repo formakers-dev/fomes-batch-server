@@ -70,7 +70,7 @@ const moveToAwsS3 = (downloadFilePath) => {
 
     if(compressResponse.code === 0) {
         log.info(TAG, '4.2 move to aws s3');
-        shell.exec('aws s3 mv ' + gzFilePath + ' s3://short-term-stats');
+        shell.exec('aws s3 mv ' + gzFilePath + ' s3://fomes-short-term-stats');
     }
 };
 
