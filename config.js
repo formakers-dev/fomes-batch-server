@@ -24,7 +24,7 @@ config.development = {
         },
         rankedApp: {
             spiderName: process.env.FOMES_RANKED_APP_SPIDER_NAME,
-            urls: process.env.FOEMS_RANKED_APP_SPIDER_URLS
+            urls: process.env.FOMES_RANKED_APP_SPIDER_URLS
         },
         appInfoUpdate: {
             spiderName: process.env.FOMES_APP_INFO_UPDATE_SPIDER_NAME,
