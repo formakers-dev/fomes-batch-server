@@ -6,7 +6,7 @@ config.development = {
     fomesStgDbUrl: process.env.FOMES_STG_DB_URL,
     slackBotToken: process.env.SLACK_BOT_TOKEN,
     firebaseMessaging: {
-        serverKey: process.env.SERVER_KEY
+        serverKey: process.env.FCM_SERVER_KEY
     },
     backup: {
         host: process.env.BACKUP_HOST,
