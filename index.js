@@ -3,6 +3,7 @@ const config = require('./config');
 const {removeOldUsages} = require('./jobs/appUsages');
 const {runCrawlerForUncrawledApps, runCrawlerForRankedApps, runCrawlerToUpdateAppInfo} = require('./jobs/crawling');
 const {backup} = require('./jobs/backupShortTermStats');
+const {syncDataToStg, syncAppsDataToStg} = require('./jobs/syncDB');
 const log = require('./utils/log');
 const slack = require('./utils/slack');
 
@@ -33,13 +34,13 @@ agenda.define('run crawling for ranked apps', function (job, done) {
 agenda.define('backup for shortTermStats', function (job, done) {
     log.info('job', 'backup for shortTermStats' + new Date());
     const date = new Date().toISOString();
-    const path = config.backup.outputPath + 'backup-short-term-stats-'+date+'.json';
+    const path = config.backup.outputPath + 'backup-short-term-stats-' + date + '.json';
     backup(path);
     done();
 });
 
 /** 오래된 앱 사용정보 삭제 **/
-agenda.define('remove old app-usages', function(job, done) {
+agenda.define('remove old app-usages', function (job, done) {
     log.info('job', 'remove old app-usages' + new Date());
 
     removeOldUsages()
@@ -53,9 +54,21 @@ agenda.define('remove old app-usages', function(job, done) {
         });
 });
 
-agenda.define('send working message to slack', function(job, done) {
+agenda.define('send working message to slack', function (job, done) {
     slack.sendMessage('배치 서버 동작 중 👍', '#dev-build');
     done();
+});
+
+/** PrdDB => StgDB 데이터 자동 동기화 **/
+agenda.define('sync from PrdDB to StgDB', function (job, done) {
+    log.info('job', 'sync from PrdDB to StgDB');
+
+    syncDataToStg('beta-tests');
+    syncDataToStg('posts');
+    // TODO: 베타테스트에 등록된 앱 정보만 가져와야함.
+    syncAppsDataToStg()
+        .then(() => done())
+        .catch(err => done(err));
 });
 
 agenda.on('ready', function () {
@@ -69,6 +82,8 @@ agenda.on('ready', function () {
 
         // 랭크드 앱 크롤러 실행 batch: 매주 월요일 1:30
         agenda.every('30 1 * * MON', 'run crawling for ranked apps');
+        // PrdDB => StgDB 데이터 자동 동기화 batch: 매 주 월요일 3:30
+        agenda.every('30 3 * * MON', 'sync from PrdDB to StgDB');
         // 앱사용정보가 존재하는 앱 정보 업데이트 크롤러 실행 batch: 매주 화요일 1:30
         agenda.every('30 1 * * TUE', 'run crawling to update app info');
 
