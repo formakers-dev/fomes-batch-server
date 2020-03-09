@@ -72,32 +72,42 @@ agenda.define('sync from PrdDB to StgDB', function (job, done) {
 });
 
 agenda.on('ready', function () {
-    log.info('agenda', `start (${process.env.NODE_ENV})`);
+    log.info('agenda', `Starting (${process.env.NODE_ENV})...`);
 
-    agenda.jobs({}, (err, jobs) => {
-        // 기존 Job정보 제거
-        if (jobs && jobs.length > 0) {
-            jobs.forEach(job => job.remove());
-        }
+    log.info('agenda', 'Searching Previous Jobs...');
 
-        // 랭크드 앱 크롤러 실행 batch: 매주 월요일 1:30
-        agenda.every('30 1 * * MON', 'run crawling for ranked apps');
-        // PrdDB => StgDB 데이터 자동 동기화 batch: 매 주 월요일 3:30
-        agenda.every('30 3 * * MON', 'sync from PrdDB to StgDB');
-        // 앱사용정보가 존재하는 앱 정보 업데이트 크롤러 실행 batch: 매주 화요일 1:30
-        agenda.every('30 1 * * TUE', 'run crawling to update app info');
+    agenda.jobs({})
+        .then(jobs => {
+            log.info('agenda', 'Removing Previous Jobs...');
 
-        // 언크롤드앱 크롤러 실행 batch: 2:30
-        agenda.every('30 2 * * *', 'run crawling for uncrawled apps');
+            // 기존 Job정보 제거
+            if (jobs && jobs.length > 0) {
+                jobs.forEach(job => job.remove());
+            }
 
-        // 단기통계데이터 백업 batch: 4:00
-        agenda.every('0 4 * * *', 'backup for shortTermStats');
-        // 오래된 앱사용정보 삭제: 4:30
-        agenda.every('30 4 * * *', 'remove old app-usages');
+            log.info('agenda', 'Registering New Jobs...');
 
-        // 생존신고 슬랙 메시지: 7:00
-        agenda.every('0 7 * * *', 'send working message to slack');
+            // 랭크드 앱 크롤러 실행 batch: 매주 월요일 1:30
+            agenda.every('30 1 * * MON', 'run crawling for ranked apps');
+            // PrdDB => StgDB 데이터 자동 동기화 batch: 매 주 월요일 3:30
+            agenda.every('30 3 * * MON', 'sync from PrdDB to StgDB');
+            // 앱사용정보가 존재하는 앱 정보 업데이트 크롤러 실행 batch: 매주 화요일 1:30
+            agenda.every('30 1 * * TUE', 'run crawling to update app info');
 
-        agenda.start();
-    });
+            // 언크롤드앱 크롤러 실행 batch: 2:30
+            agenda.every('30 2 * * *', 'run crawling for uncrawled apps');
+
+            // 단기통계데이터 백업 batch: 4:00
+            agenda.every('0 4 * * *', 'backup for shortTermStats');
+            // 오래된 앱사용정보 삭제: 4:30
+            agenda.every('30 4 * * *', 'remove old app-usages');
+
+            // 생존신고 슬랙 메시지: 7:00
+            agenda.every('0 7 * * *', 'send working message to slack');
+
+            agenda.start();
+
+            log.info('agenda', 'Successfully Started Agenda!!!');
+        })
+        .catch(err => log.error('agenda', err));
 });
