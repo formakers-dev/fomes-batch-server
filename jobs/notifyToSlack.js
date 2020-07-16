@@ -19,7 +19,7 @@ const openedBetaTests = (channel) => {
     }).then(betaTests => {
       const titles = betaTests.map(betaTest => "- " + betaTest.title);
       const currentDate = moment().format('MM/DD');
-      const message = "[" + currentDate + "] 현재 포메스 앱에 오픈되어있는 테스트 입니다 : \n" + titles.join('\n');
+      const message = "*[" + currentDate + "] 현재 포메스 앱에 오픈되어있는 테스트 입니다 : *\n" + titles.join('\n');
 
       slack.sendMessage(message, channel);
   }).catch(err => console.error(err));
