@@ -60,6 +60,11 @@ agenda.define('send working message to slack', function (job, done) {
     done();
 });
 
+agenda.define('send opened game-tests to slack', function (job, done) {
+    NotifyToSlack.openedBetaTests('#general');
+    done();
+});
+
 /** PrdDB => StgDB 데이터 자동 동기화 **/
 agenda.define('sync from PrdDB to StgDB', function (job, done) {
     log.info('job', 'sync from PrdDB to StgDB');
@@ -105,6 +110,9 @@ agenda.on('ready', function () {
 
             // 생존신고 슬랙 메시지: 7:00
             agenda.every('0 7 * * *', 'send working message to slack');
+
+            // 오픈중 게임테스트 공유 슬랙 메세지: 9:00
+            agenda.every('0 9 * * *', 'send opened game-tests to slack');
 
             agenda.start();
 
