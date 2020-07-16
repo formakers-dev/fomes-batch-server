@@ -55,7 +55,7 @@ agenda.define('remove old app-usages', function (job, done) {
 });
 
 agenda.define('send working message to slack', function (job, done) {
-    slack.sendMessage('배치 서버 동작 중 👍', '#dev-build');
+    slack.sendMessage('배치 서버 동작 중 👍', '#dev');
     done();
 });
 
