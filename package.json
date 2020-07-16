@@ -5,9 +5,10 @@
   "main": "index.js",
   "dependencies": {
     "agenda": "^2.0.2",
-    "axios": "^0.17.1",
+    "axios": "^0.19.2",
     "bunyan": "^1.8.12",
     "forever": "^1.0.0",
+    "moment": "^2.27.0",
     "mongoose": "^5.5.1",
     "shelljs": "^0.8.3"
   },

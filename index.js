@@ -4,6 +4,7 @@ const {removeOldUsages} = require('./jobs/appUsages');
 const {runCrawlerForUncrawledApps, runCrawlerForRankedApps, runCrawlerToUpdateAppInfo} = require('./jobs/crawling');
 const {backup} = require('./jobs/backupShortTermStats');
 const {syncDataToStg, syncAppsDataToStg} = require('./jobs/syncDB');
+const NotifyToSlack = require('./jobs/notifyToSlack');
 const log = require('./utils/log');
 const slack = require('./utils/slack');
 
@@ -55,7 +56,7 @@ agenda.define('remove old app-usages', function (job, done) {
 });
 
 agenda.define('send working message to slack', function (job, done) {
-    slack.sendMessage('배치 서버 동작 중 👍', '#dev');
+    NotifyToSlack.workingMessage('#dev');
     done();
 });
 
