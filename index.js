@@ -4,6 +4,7 @@ const {removeOldUsages} = require('./jobs/appUsages');
 const {runCrawlerForUncrawledApps, runCrawlerForRankedApps, runCrawlerToUpdateAppInfo} = require('./jobs/crawling');
 const {backup} = require('./jobs/backupShortTermStats');
 const {syncDataToStg, syncAppsDataToStg} = require('./jobs/syncDB');
+const NotifyToSlack = require('./jobs/notifyToSlack');
 const log = require('./utils/log');
 const slack = require('./utils/slack');
 
@@ -55,7 +56,12 @@ agenda.define('remove old app-usages', function (job, done) {
 });
 
 agenda.define('send working message to slack', function (job, done) {
-    slack.sendMessage('배치 서버 동작 중 👍', '#dev-build');
+    NotifyToSlack.workingMessage('#dev');
+    done();
+});
+
+agenda.define('send opened game-tests to slack', function (job, done) {
+    NotifyToSlack.openedBetaTests('#general');
     done();
 });
 
@@ -104,6 +110,9 @@ agenda.on('ready', function () {
 
             // 생존신고 슬랙 메시지: 7:00
             agenda.every('0 7 * * *', 'send working message to slack');
+
+            // 오픈중 게임테스트 공유 슬랙 메세지: 9:00
+            agenda.every('0 9 * * *', 'send opened game-tests to slack');
 
             agenda.start();
 
