@@ -61,7 +61,7 @@ agenda.define('send working message to slack', function (job, done) {
 });
 
 agenda.define('send opened game-tests to slack', function (job, done) {
-    NotifyToSlack.openedBetaTests('#general');
+    NotifyToSlack.openedBetaTests('#_general');
     done();
 });
 
