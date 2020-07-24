@@ -12,14 +12,20 @@ const openedBetaTests = (channel) => {
   BeatTests.find({
       openDate: { $lte: currentTime },
       closeDate: { $gte: currentTime },
-      $or: [
-        { status: { $exists: false } },
-        { status: { $ne: 'test' } }
-      ],
-    }).then(betaTests => {
-      const titles = betaTests.map(betaTest => "- " + betaTest.title);
+    }).lean()
+    .then(betaTests => {
+      const betaTestsForTest = betaTests.filter(betaTest => betaTest.status === 'test');
+      const betaTestsForRelease = betaTests.filter(betaTest => betaTest.status !== 'test');
+
       const currentDate = moment().format('MM/DD');
-      const message = "*[" + currentDate + "] 현재 포메스 앱에 오픈되어있는 테스트 입니다 : *\n" + titles.join('\n');
+      let message = "*[" + currentDate + "] 포메스 앱 테스트 오픈 현황 공유*"
+        + "\n\n*:fomes: 현재 포메스 앱에 오픈되어있는 테스트들 : *\n"
+        + betaTestsForRelease.map(betaTest => "- " + betaTest.title).join('\n');
+
+      if (betaTestsForTest.length > 0) {
+        message += "\n\n*:white_check_mark: 테스트 모드로 오픈되어있는 테스트들 : *\n"
+          + betaTestsForTest.map(betaTest => "- " + betaTest.title).join('\n');
+      }
 
       slack.sendMessage(message, channel);
   }).catch(err => console.error(err));
