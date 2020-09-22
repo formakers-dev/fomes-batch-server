@@ -56,11 +56,13 @@ agenda.define('remove old app-usages', function (job, done) {
 });
 
 agenda.define('send working message to slack', function (job, done) {
+    log.info('job', 'send working message to slack' + new Date());
     NotifyToSlack.workingMessage('#dev');
     done();
 });
 
 agenda.define('send opened game-tests to slack', function (job, done) {
+    log.info('job', 'send opened game-tests to slack' + new Date());
     NotifyToSlack.openedBetaTests('#_general');
     done();
 });

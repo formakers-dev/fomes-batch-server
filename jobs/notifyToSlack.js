@@ -1,6 +1,7 @@
 const slack = require('../utils/slack');
 const moment = require('moment');
 const BeatTests = require('../models/betaTests');
+const log = require('../utils/log');
 
 const workingMessage = (channel) => {
   slack.sendMessage('배치 서버 동작 중 👍', channel);
@@ -28,7 +29,10 @@ const openedBetaTests = (channel) => {
       }
 
       slack.sendMessage(message, channel);
-  }).catch(err => console.error(err));
+  }).catch(err => {
+    log.error('[Error] openedBetaTests) ' + new Date());
+    log.error(err);
+  });
 };
 
 module.exports = {
