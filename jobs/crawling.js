@@ -39,7 +39,7 @@ const checkResponse = (response) => {
         log.info(TAG, '[error] previous command occur a error. so, this job is going to finish');
         log.error(TAG, '[shell.stderr]', response.stderr);
 
-        // TODO : 논의필요. 배치는 무정지 서버로 유지해야하지 않을지?
+        slack.sendMessage('🚨 [배치] 크롤링 시 오류 발생!\n배치가 주것슴다--; 개발팀 출동하라! 🏃‍♀🏃‍♂️️', 'dev-issues');
         shell.exit(1);
     }
 };
